@@ -30,17 +30,17 @@ Actor:: Actor(char initPlayerChar, int x0, int y0, int health0, const char colou
     update_colour(colour0);
     put_actor();
 }
-
+    
 int Actor:: get_x() const
 {
     return location_x;
 }
-
+    
 int Actor:: get_y() const
 {
     return location_y;
 }
-
+    
 string Actor:: get_location_string() const
 {
     char buffer[80]={0};
@@ -50,17 +50,17 @@ string Actor:: get_location_string() const
     formatted_location += string(buffer) + ")";
     return formatted_location;
 }
-
+    
 void Actor:: change_char(char new_actor_char)
 {
     actorChar = min(int('~'),max(int(new_actor_char),int(' ')));
 }
-
+    
 int Actor:: get_health_int() const
 {
     return health;
 }
-
+    
 string Actor:: get_health_message() const
 {
     char buffer[80]={0};
@@ -98,7 +98,7 @@ void Actor:: update_location(int delta_x, int delta_y, bool clearCurrentLocation
         put_actor();
     }
 }
-
+    
 void Actor:: put_actor() const
 {
     terminal_color(actorColour);
@@ -106,3 +106,4 @@ void Actor:: put_actor() const
     terminal_refresh();
     terminal_color(color_from_name(DRAW_COLOUR));
 }
+

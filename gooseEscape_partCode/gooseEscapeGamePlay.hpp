@@ -20,6 +20,13 @@ const int EMPTY = 0;
 const int SHALL_NOT_PASS = 1;
 const int WINNER = 2;
 
+const int MAP_X = 20;
+const int MAP_Y = 20;
+const int WALL_LENGTH = 10;
+const int WINNER_Y = 3;
+const int WINNER_X = 4;
+
+
 /*
     A few examples of characters both for actors and for the game board itself
     are shown.
@@ -61,11 +68,14 @@ bool captured(Actor const & player, Actor const & monster);
 /*
     Move the player to a new location based on the user input
 */
-void movePlayer(int key, Actor & player, /* game board array and any other parameters */);
+void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y]);
 
 /*
     What other functions do you need to make the game work?  What can you add
     to the basic functionality to make it more fun to play?
 */
+void printBoard(int map[MAP_X][MAP_Y]);
+
+void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);
 
 #endif
