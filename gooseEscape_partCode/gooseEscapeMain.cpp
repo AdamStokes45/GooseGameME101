@@ -100,7 +100,7 @@ int main()
     	    movePlayer(keyEntered, player, map);
 	    
     	    // call the goose's chase function
-    	    //moveGoose(monster, player, map);
+    	    moveGoose(monster, player, map);
     	    // call other functions to do stuff?
   	}
 
