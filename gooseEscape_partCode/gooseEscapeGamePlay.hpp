@@ -23,8 +23,8 @@ const int EMPTY = 0;
 const int SHALL_NOT_PASS = 1;
 const int WINNER = 2;
 
-const int MAP_X = 100;
-const int MAP_Y = 100;
+const int MAP_X = 80;
+const int MAP_Y = 21;
 const int WALL_LENGTH = 10;
 const int WINNER_Y = 3;
 const int WINNER_X = 4;

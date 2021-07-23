@@ -16,10 +16,9 @@ Console out;
 
 int main()
 {
-	
     // Set up for using rand() to generate random numbers (can be deleted if random numbers not used)
     srand(time(NULL));
-    
+
 	//Set up the window.  Don't edit these two lines
     terminal_open();
   	terminal_set(SETUP_MESSAGE);
@@ -48,16 +47,16 @@ int main()
 */
 	for (int column = 0; column < WALL_LENGTH; column++)
 	{
-		map[5][column+3] = SHALL_NOT_PASS;
+		map[column+3][5] = SHALL_NOT_PASS;
 	}
-	for (int row = 0; row < WINNER_Y; row++)
+	for (int col = 0; col < WINNER_X; col++)
 	{
-		for (int col = 0; col < WINNER_X; row++)
+		for (int row = 0; row < WINNER_Y; row++)
 		{
-			map[row+4][col+8] = WINNER;
+			map[col+4][row+8] = WINNER;
 		}
 	}	
-  	
+
     // Call the function to print the game board
 	printBoard(map);
 /*

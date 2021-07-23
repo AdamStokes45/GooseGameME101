@@ -46,14 +46,19 @@ y direction
 */
 void printBoard(int map[MAP_X][MAP_Y])
 {
-	for (int row = 0; row < MAP_X; row++)
+	for (int col = 0; col < MAP_X; col++)
   	{
-  		for (int col = 0; col < MAP_Y; col++)
+  		for (int row = 0; row < MAP_Y; row++)
     	{
-      		if (map[row][col] = 1)
-    			terminal_put(row, col, WALL_CHAR);
-			if (map[row][col] = 2)
-    			terminal_put(row, col, WIN_CHAR);
+      		if (map[col][row] == 1)
+      		{
+      			terminal_put(col, row, WALL_CHAR);
+			}	
+			else if (map[col][row] == 2)
+			{
+				terminal_put(col, row, WIN_CHAR);
+			}
+    			
     	}
   	}
 
