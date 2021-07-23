@@ -99,10 +99,11 @@ int main()
     	    movePlayer(keyEntered, player, map);
 	    
     	    // call the goose's chase function
-    	    moveGoose(monster, player, map);
+    	    moveGoose(player, monster, map);
     	    // call other functions to do stuff?
-  	}
-
+    	    
+  		}
+	}
     if (keyEntered != TK_CLOSE)
     {
       	//once we're out of the loop, the game is over
@@ -119,5 +120,5 @@ int main()
 
 	//game is done, close it  
     terminal_close();
-	}	
-}
+}	
+

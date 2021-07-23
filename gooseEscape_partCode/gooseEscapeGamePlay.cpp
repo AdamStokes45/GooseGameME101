@@ -106,24 +106,22 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y])
     else if (key == TK_RIGHT)
         xMove = 1;
     
-    if (player.can_move(xMove, yMove) 
-     && map[player.get_x() + xMove][player.get_y() + yMove] != SHALL_NOT_PASS)//checks that the player movement is not outside the border and not going ontop of a wall
-        player.update_location(xMove, yMove);
+    if (player.can_move(xMove, yMove) && //checks that the player movement is not outside the border and not going ontop of a wall
+		map[player.get_x() + xMove][player.get_y() + yMove] != SHALL_NOT_PASS) 
+		player.update_location(xMove, yMove);
+        	
 }
 
 void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
 {
 	int yMove = 0, xMove = 0;
-    int deltaY = 0, deltaX = 0;
-    deltaX = player.get_x() - goose.get_x();
-    deltaY = player.get_y() - goose.get_y();
-    if (abs(deltaX) > abs(deltaY))
+    if (abs(player.get_x() - goose.get_x()) > abs(player.get_y() - goose.get_y()))
     {
     	if (player.get_x() > goose.get_x())
       		xMove = 1;
 		else
       		xMove = -1;
-		}
+	}
     else
     {
       if (player.get_y() > goose.get_y())
