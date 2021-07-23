@@ -1,3 +1,6 @@
+//MAIN
+//gooseEscapeMain.cpp
+
 #include <BearLibTerminal.h>
 #include <cmath>
 #include <ctime>
@@ -45,13 +48,13 @@ int main()
 */
 	for (int column = 0; column < WALL_LENGTH; column++)
 	{
-		map[5][column+3] = SHALL_NOT_PASS
+		map[5][column+3] = SHALL_NOT_PASS;
 	}
 	for (int row = 0; row < WINNER_Y; row++)
 	{
 		for (int col = 0; col < WINNER_X; row++)
 		{
-			map[i+4][col+8] = WINNER;
+			map[row+4][col+8] = WINNER;
 		}
 	}	
   	
@@ -97,13 +100,18 @@ int main()
     	    movePlayer(keyEntered, player, map);
 	    
     	    // call the goose's chase function
-    	    moveGoose(goose, player, map);
+    	    //moveGoose(monster, player, map);
     	    // call other functions to do stuff?
   	}
 
     if (keyEntered != TK_CLOSE)
     {
       	//once we're out of the loop, the game is over
+        if (win)
+        {
+        	//out.writeline("You have won");
+        }
+        
         out.writeLine("Game has ended");
     
         // Output why:  did the goose get you?  Or did you win?
@@ -114,4 +122,5 @@ int main()
 
 	//game is done, close it  
     terminal_close();
+	}	
 }

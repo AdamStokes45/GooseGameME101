@@ -1,3 +1,6 @@
+//GAMEPLAY HEADER
+//gooseEscapeGamePlay.hpp
+
 #ifndef GOOSE_ESCAPE_GAMEPLAY
 #define GOOSE_ESCAPE_GAMEPLAY
 #include "gooseEscapeUtil.hpp"

@@ -1,3 +1,6 @@
+//GAMEPLAY C++
+//gooseEscapeGamePlay.cpp
+
 #include <iostream>
 #include <cmath>
 using namespace std;
@@ -13,7 +16,7 @@ using namespace std;
     it fun.
     
     If you add or modify functions, be sure to update the prototypes in the
-    gooseEscapeGamePlay.hpp file.
+    gooseEscapeGamePlay.hpp file
 */
 
 extern Console out;
@@ -41,9 +44,18 @@ y direction
     terminal_refresh() once after all elements have been put. Note that empty
     spaces do not need to be drawn.
 */
-// function header
+void printBoard(int map[MAP_X][MAP_Y])
 {
-    terminal_put(x_location_on_board,y_location_on_board,WIN_CHAR);
+	for (int row = 0; row < MAP_X; row++)
+  	{
+  		for (int col = 0; col < MAP_Y; col++)
+    	{
+      		if (map[row][col] = 1)
+    			terminal_put(row, col, WALL_CHAR);
+			if (map[row][col] = 2)
+    			terminal_put(row, col, WIN_CHAR);
+    	}
+  	}
 
 	// after putting items on the game board, refresh the terminal to see the items
 	terminal_refresh();
@@ -77,7 +89,7 @@ bool captured(Actor const & player, Actor const & monster)
 
     Going further: You could decide to learn about switch statements
 */
-void movePlayer(int key, Actor & player, /* game board array and any other parameters */)
+void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y])
 {
     int yMove = 0, xMove = 0;
     if (key == TK_UP)
@@ -88,10 +100,10 @@ void movePlayer(int key, Actor & player, /* game board array and any other param
         xMove = -1;
     else if (key == TK_RIGHT)
         xMove = 1;
-        
-    if (player.can_move(xMove, yMove) 
-      && /* new location on game board */ != SHALL_NOT_PASS)
-        player.update_location(xMove, yMove);
+    
+    //if (player.can_move(xMove, yMove) 
+      //&& /* new location on game board */ != SHALL_NOT_PASS)
+        //player.update_location(xMove, yMove);
 }
 
 /*
