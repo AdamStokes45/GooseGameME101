@@ -108,9 +108,7 @@ int main()
     {
       	//once we're out of the loop, the game is over
         if (win)
-        {
-        	//out.writeline("You have won");
-        }
+        	out.writeLine("You have won");
         
         out.writeLine("Game has ended");
     
