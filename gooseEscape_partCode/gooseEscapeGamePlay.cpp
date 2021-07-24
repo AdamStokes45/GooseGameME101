@@ -94,7 +94,7 @@ bool captured(Actor const & player, Actor const & monster)
 
     Going further: You could decide to learn about switch statements
 */
-void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y])
+void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win)
 {
     int yMove = 0, xMove = 0;
     if (key == TK_UP)
@@ -109,6 +109,11 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y])
     if (player.can_move(xMove, yMove) &&
 		map[player.get_x() + xMove][player.get_y() + yMove] != SHALL_NOT_PASS) 
 		player.update_location(xMove, yMove);
+		
+	if (map[player.get_x()][player.get_y()] == 2)
+	{
+		win = 1;
+	}
         	
 }
 
@@ -130,11 +135,22 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
           yMove = -1;
     }
     
-    goose.update_location(xMove, yMove);
+    if (map[goose.get_x()][goose.get_y()] == 1 || map[goose.get_x()][goose.get_y()] == 1)
+    {
+    	goose.update_location(xMove, yMove);
+		printBoard(map);
+   		goose.update_location(0,0);
+	}
+	else
+	{
+		goose.update_location(xMove, yMove);
+	}
+	
     
-    //if(goose.get_x() == ) working on this
+    	
     
-    printBoard(map);
-    goose.update_location(0,0);
+	
+    
+    
     
 }

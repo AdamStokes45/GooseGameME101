@@ -71,12 +71,13 @@ bool captured(Actor const & player, Actor const & monster);
 /*
     Move the player to a new location based on the user input
 */
-void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y]);
+void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win);
 
 /*
     What other functions do you need to make the game work?  What can you add
     to the basic functionality to make it more fun to play?
 */
+
 void printBoard(int map[MAP_X][MAP_Y]);
 
 void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);

@@ -96,7 +96,7 @@ int main()
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE)
         {
             // move the player, you can modify this function
-    	    movePlayer(keyEntered, player, map);
+    	    movePlayer(keyEntered, player, map,win);
 	    
     	    // call the goose's chase function
     	    moveGoose(player, monster, map);
@@ -109,6 +109,10 @@ int main()
       	//once we're out of the loop, the game is over
         if (win)
         	out.writeLine("You have won");
+        	
+        if (captured(player,monster))
+ 			out.writeLine("Goose has caught you");
+	
         
         out.writeLine("Game has ended");
     
@@ -117,6 +121,8 @@ int main()
     	// Wait until user closes the window
         while (terminal_read() != TK_CLOSE);
     }
+    
+    
 
 	//game is done, close it  
     terminal_close();
