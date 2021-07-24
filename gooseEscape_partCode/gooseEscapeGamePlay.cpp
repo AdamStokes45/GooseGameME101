@@ -135,7 +135,7 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
           yMove = -1;
     }
     
-    if (map[goose.get_x()][goose.get_y()] == 1 || map[goose.get_x()][goose.get_y()] == 1)
+    if (map[goose.get_x()][goose.get_y()] == 1 || map[goose.get_x()][goose.get_y()] == 2)
     {
     	goose.update_location(xMove, yMove);//moves goose
 		printBoard(map);//re prints board where to cover where goose overlapped
