@@ -31,8 +31,10 @@ int main()
     Call the functions that you have written in the game play file.
 */
     // declare the game board "map"
-	
-	
+	int level_selected = 0;
+	int goose_spawn_x = 0, goose_spawn_y = 0;
+  int wall_amount = 0, wall_length = 0, wall_width = 0, wall_spawn_x = 0, wall_spawn_y = 0, wall_orientation = 0;
+  int win_x = 0, win_y = 0, win_size = 0;
 	bool win = 0;
 	
 	int map[MAP_X][MAP_Y] = {0};
@@ -45,30 +47,127 @@ int main()
     it make sense to store this information in a file?  Should code be a
     function as well?
 */
-	for (int column = 0; column < WALL_LENGTH; column++)
-	{
-		map[column+3][5] = SHALL_NOT_PASS;
-	}
-	for (int col = 0; col < WINNER_X; col++)
-	{
-		for (int row = 0; row < WINNER_Y; row++)
-		{
-			map[col+4][row+8] = WINNER;
-		}
-	}	
+
+	//easy medium hard maps delcared below																																
+	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
+  {
+  	for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
+  	{
+  		map[col+27][row+9] = EASY;
+      map[col+39][row+9] = MEDIUM;
+      map[col+51][row+9] = HARD;
+  	}
+  }
 
     // Call the function to print the game board
 	printBoard(map);
-/*
-    The player and goose are initialized to the same locations
-    (10,10) and (70,20) each time, with health of 100.
-    You likely want to change this somehow.
-*/
-    // make the player
-	Actor player(PLAYER_CHAR, 10,10, 100, PLAYER_COLOUR);
+
+
+	//make menu selector
+	Actor starter(PLAYER_CHAR, 40, 2, 100, PLAYER_COLOUR);
+
+	//select level
+	int keyEntered = TK_A;
+
+ while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && level_selected == 0)
+	{
+	    // get player key press
+	    keyEntered = terminal_read();
+
+        if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE)
+        {
+            // move the player, you can modify this function
+    	    moveStarter(keyEntered, starter, map,level_selected);	  
+  		}
+	}
+  
+  cout << "Level: " << level_selected;
 	
+	
+	terminal_clear_area(0,0,MAP_X,MAP_Y);
+	terminal_refresh();
+  
+	if (level_selected == 3) // easy map generation
+  {
+  	wall_amount = rand() % 3 + 1;
+    wall_width = 1;
+    for (int wall_num = 0; wall_num < wall_amount; wall_num++)
+    {
+    	wall_length = rand() % 8 + 3;
+      wall_spawn_x = rand() % (80 - wall_length);
+      wall_spawn_y = rand() % (21 - wall_length);
+      wall_orientation = rand() % 2;
+      
+      if (wall_orientation == 0)
+      {
+        for (int col = 0; col < wall_length; col++)
+        {
+          map[wall_spawn_x + col][wall_spawn_y] = WALL;
+        }
+      }
+      else
+      {
+        for (int row = 0; row < wall_length; row++)
+        {
+          map[wall_spawn_x][wall_spawn_y+row] = WALL;
+        }
+      }
+      
+    }
+  }
+	else if (level_selected == 4) // medium map generation
+  {
+    wall_amount = rand() % 8 + 3;
+    int wall_width = 1;
+    for(int wall_num = 0; wall_num < wall_amount; wall_num++)
+    {
+    	wall_length = rand() % 12 + 5;
+      wall_spawn_x = rand() % (80 - wall_length);
+      wall_spawn_y = rand() % (21 - wall_length);
+      wall_orientation = rand() % 2;
+      
+      if(wall_orientation == 0)
+      {
+      
+      for (int col = 0; col < wall_length; col++)
+  		{
+      	map[wall_spawn_x + col][wall_spawn_y] = WALL;
+      }
+  }
+      else
+      {
+      for (int row = 0; row < wall_length; row++)
+  		{
+      	map[wall_spawn_x][wall_spawn_y + row] = WALL;
+      }
+      }
+  		
+  }
+      
+    }
+  
+  else // hard map generation
+  {
+  	wall_amount = rand() % 11 + 10;
+    /*
+    for (int wall_num = 0; wall_num < wall_amount; wall_num++)
+    {
+    	wall_length = rand() % 8 + 3;
+      wall_spawn_x = rand();
+      wall_spawn_y = rand();
+    }
+    */
+  }
+  
+  printBoard(map);
+
+//do something based on the level selected from previous while loop
+
+  // make the player
+	Actor player(PLAYER_CHAR, 10,10, 100, PLAYER_COLOUR);
+  
 	// make the goose
-	Actor monster(MONSTER_CHAR, 70,20, 100, GOOSE_COLOUR);
+	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);
     
 	// Printing the instructions in the console window
     out.writeLine("Escape the Goose! " + monster.get_location_string());
@@ -76,16 +175,8 @@ int main()
 	out.writeLine("If the goose catches you, you lose!");
 	out.writeLine("Be careful! Sometimes the goose can jump through walls!");
 
-/*
-    This is the main game loop.  It continues to let the player give input
-    as long as they do not press escape or close, they are not captured by
-    the goose, and they didn't reach the win tile
-*/
-/*
-    All key presses start with "TK_" then the character.  So "TK_A" is the "a"
-    key being pressed.
-*/
-    int keyEntered = TK_A;  // can be any valid value that is not ESCAPE or CLOSE
+
+      // can be any valid value that is not ESCAPE or CLOSE
     
     while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE 
                     && !captured(player,monster) && !win)
@@ -126,5 +217,4 @@ int main()
 
 	//game is done, close it  
     terminal_close();
-}	
-
+}

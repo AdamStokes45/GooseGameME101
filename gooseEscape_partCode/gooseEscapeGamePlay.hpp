@@ -20,14 +20,15 @@
 
 // Going further:  Learn how to use an enum for these values
 const int EMPTY = 0;
-const int SHALL_NOT_PASS = 1;
+const int WALL = 1;
 const int WINNER = 2;
+const int EASY = 3;
+const int MEDIUM = 4;
+const int HARD = 5;
 
 const int MAP_X = 80;
 const int MAP_Y = 21;
-const int WALL_LENGTH = 10;
-const int WINNER_Y = 3;
-const int WINNER_X = 4;
+const int LEVEL_SELECT_SIZE = 3;
 
 
 /*
@@ -39,6 +40,9 @@ const int PLAYER_CHAR = int('@');
 const int MONSTER_CHAR = int('G');
 const int WALL_CHAR = int('o');
 const int WIN_CHAR = int('%'); //% sign, a special character used in the ancient game "Rogue"
+const int EASY_CHAR = int('E');
+const int MEDIUM_CHAR = int('M');
+const int HARD_CHAR = int('H');
 
 /*
 Colours have the format "brightness hue" or "hue", e.g. "white" "light green"
@@ -81,5 +85,7 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win);
 void printBoard(int map[MAP_X][MAP_Y]);
 
 void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);
+
+void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected);
 
 #endif

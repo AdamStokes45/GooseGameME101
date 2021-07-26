@@ -21,47 +21,40 @@ using namespace std;
 
 extern Console out;
 
-/*
-With graphics, screens are given an x,y coordinate system with the origin
-in the upper left corner.  So it means the coordinate axes are:
----------------->   x direction
-|
-|
-|
-|
-|
-V
 
-y direction 
-*/
-	
-/*
-	Print the game world
-	
-    The purpose of this function is to update the console to reflect the
-    current state of the game board. It works by calling the terminal_put(...)
-    function once for each of the game board elements, and then calling
-    terminal_refresh() once after all elements have been put. Note that empty
-    spaces do not need to be drawn.
-*/
+
+    
 void printBoard(int map[MAP_X][MAP_Y])
 {
 	for (int col = 0; col < MAP_X; col++)
   	{
   		for (int row = 0; row < MAP_Y; row++)
     	{
-      		if (map[col][row] == 1)
-      		{
-      			terminal_put(col, row, WALL_CHAR);
-			}	
-			else if (map[col][row] == 2)
-			{
-				terminal_put(col, row, WIN_CHAR);
-			}
-    			
+      		for (int row = 0; row < MAP_Y; row++)
+    			{
+      			if (map[col][row] == 1)
+      			{
+      				terminal_put(col, row, WALL_CHAR);
+						}	
+            else if (map[col][row] == 2)
+            {
+              terminal_put(col, row, WIN_CHAR);
+            }
+            else if (map[col][row] == 3)
+            {
+              terminal_put(col, row, EASY_CHAR);
+            }	
+              else if (map[col][row] == 4)
+            {
+              terminal_put(col, row, MEDIUM_CHAR);
+            }
+            else if (map[col][row] == 5)
+            {
+              terminal_put(col, row, HARD_CHAR);
+            }
     	}
   	}
-
+}
 	// after putting items on the game board, refresh the terminal to see the items
 	terminal_refresh();
 }
@@ -107,14 +100,13 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win)
         xMove = 1;
     
     if (player.can_move(xMove, yMove) &&
-		map[player.get_x() + xMove][player.get_y() + yMove] != SHALL_NOT_PASS) 
+		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
 		player.update_location(xMove, yMove);
 		
 	if (map[player.get_x()][player.get_y()] == 2)
 	{
 		win = 1;
-	}
-        	
+	}     	
 }
 
 void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
@@ -138,19 +130,33 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
     if (map[goose.get_x()][goose.get_y()] == 1 || map[goose.get_x()][goose.get_y()] == 2)
     {
     	goose.update_location(xMove, yMove);//moves goose
-		printBoard(map);//re prints board where to cover where goose overlapped
+			printBoard(map);//re prints board where to cover where goose overlapped
    		goose.update_location(0,0);//reprints goose incase hes still on the wall and got written over
 	}
 	else
 	{
 		goose.update_location(xMove, yMove);//if hes not on a wall, he just moves
 	}
-	
-    
-    	
-    
-	
-    
-    
-    
+  
 }
+void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected)
+{
+	int yMove = 0, xMove = 0;
+    if (key == TK_UP)
+        yMove = -1;
+    else if (key == TK_DOWN)
+        yMove = 1;
+    else if (key == TK_LEFT)
+        xMove = -1;
+    else if (key == TK_RIGHT)
+        xMove = 1;
+    
+    if (starter.can_move(xMove, yMove)) 
+			starter.update_location(xMove, yMove);
+    
+    if (map[starter.get_x()][starter.get_y()] != 0)
+		level_selected = map[starter.get_x()][starter.get_y()];
+}
+
+
+
