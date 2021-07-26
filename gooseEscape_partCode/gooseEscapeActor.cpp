@@ -98,7 +98,14 @@ void Actor:: update_location(int delta_x, int delta_y, bool clearCurrentLocation
         put_actor();
     }
 }
-    
+
+void Actor:: spawn(int spawn_x, int spawn_y) //new function that spawns the actor on a new level
+{
+	location_x = spawn_x;
+	location_y = spawn_y;
+	put_actor();
+} 
+
 void Actor:: put_actor() const
 {
     terminal_color(actorColour);

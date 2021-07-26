@@ -11,7 +11,7 @@ using namespace std;
 #include "gooseEscapeConsole.hpp"
 #include "gooseEscapeGamePlay.hpp"
 
-//set up the console.   Don't modify this line!
+//set up the console. Don't modify this line!
 Console out;
 
 int main()
@@ -23,53 +23,35 @@ int main()
     terminal_open();
   	terminal_set(SETUP_MESSAGE);
 
-/*
-    The code below provides a skeleton of the game play.  You will need to 
-    write code for setting up the game board, and playing the game itself.
-    You can modify the code given as needed.
-    
-    Call the functions that you have written in the game play file.
-*/
-    // declare the game board "map"
 	int level_selected = 0;
-	int goose_spawn_x = 0, goose_spawn_y = 0;
-  int wall_amount = 0, wall_length = 0, wall_width = 0, wall_spawn_x = 0, wall_spawn_y = 0, wall_orientation = 0;
-  int win_x = 0, win_y = 0, win_size = 0;
+	int goose_spawn_x = 0, goose_spawn_y = 0, player_spawn_x = -1, player_spawn_y = -1;
 	bool win = 0;
 	
 	int map[MAP_X][MAP_Y] = {0};
 
-/*
-    Initialize locations in the game board to have game features.  This
-    would include anything that is static and doesn't move like a wall.  Hard
-    coding them like you see below is a poor way to code this.  What if you 
-    have many features to add to the game board?  Should you use a loop?  Does
-    it make sense to store this information in a file?  Should code be a
-    function as well?
-*/
 
 	//easy medium hard maps delcared below																																
 	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
-  {
-  	for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
   	{
-  		map[col+27][row+9] = EASY;
-      map[col+39][row+9] = MEDIUM;
-      map[col+51][row+9] = HARD;
+  		for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
+  		{
+	  		map[col+27][row+9] = EASY;
+	      	map[col+39][row+9] = MEDIUM;
+	      	map[col+51][row+9] = HARD;
+  		}
   	}
-  }
 
     // Call the function to print the game board
 	printBoard(map);
 
 
-	//make menu selector
-	Actor starter(PLAYER_CHAR, 40, 2, 100, PLAYER_COLOUR);
+	//make the player
+	Actor player(PLAYER_CHAR, 40, 8, 100, PLAYER_COLOUR);
 
 	//select level
 	int keyEntered = TK_A;
 
- while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && level_selected == 0)
+ 	while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && level_selected == 0)
 	{
 	    // get player key press
 	    keyEntered = terminal_read();
@@ -77,94 +59,47 @@ int main()
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE)
         {
             // move the player, you can modify this function
-    	    moveStarter(keyEntered, starter, map,level_selected);	  
+    	    moveStarter(keyEntered, player, map, level_selected);	  
   		}
 	}
   
-  cout << "Level: " << level_selected;
+  	cout << "Level: " << level_selected;
 	
-	
-	terminal_clear_area(0,0,MAP_X,MAP_Y);
+	terminal_clear_area(0, 0, MAP_X, MAP_Y);
 	terminal_refresh();
-  
+  	
+  	for (int col = 0; col < MAP_X; col++)
+  	{
+  		for (int row = 0; row < MAP_Y; row++)
+  		{
+  			map[col][row] = 0;
+		}
+	}
+  	
 	if (level_selected == 3) // easy map generation
-  {
-  	wall_amount = rand() % 3 + 1;
-    wall_width = 1;
-    for (int wall_num = 0; wall_num < wall_amount; wall_num++)
-    {
-    	wall_length = rand() % 8 + 3;
-      wall_spawn_x = rand() % (80 - wall_length);
-      wall_spawn_y = rand() % (21 - wall_length);
-      wall_orientation = rand() % 2;
-      
-      if (wall_orientation == 0)
-      {
-        for (int col = 0; col < wall_length; col++)
-        {
-          map[wall_spawn_x + col][wall_spawn_y] = WALL;
-        }
-      }
-      else
-      {
-        for (int row = 0; row < wall_length; row++)
-        {
-          map[wall_spawn_x][wall_spawn_y+row] = WALL;
-        }
-      }
-      
-    }
-  }
+  	{
+  		generateRandomArea(1, 3, 1, 1, 3, 8, map, WALL);
+  		generateRandomArea(1, 1, 2, 3, 2, 3, map, WINNER);
+  	}
 	else if (level_selected == 4) // medium map generation
-  {
-    wall_amount = rand() % 8 + 3;
-    int wall_width = 1;
-    for(int wall_num = 0; wall_num < wall_amount; wall_num++)
-    {
-    	wall_length = rand() % 12 + 5;
-      wall_spawn_x = rand() % (80 - wall_length);
-      wall_spawn_y = rand() % (21 - wall_length);
-      wall_orientation = rand() % 2;
-      
-      if(wall_orientation == 0)
-      {
-      
-      for (int col = 0; col < wall_length; col++)
-  		{
-      	map[wall_spawn_x + col][wall_spawn_y] = WALL;
-      }
-  }
-      else
-      {
-      for (int row = 0; row < wall_length; row++)
-  		{
-      	map[wall_spawn_x][wall_spawn_y + row] = WALL;
-      }
-      }
-  		
-  }
-      
+  	{
+  		generateRandomArea(3, 8, 1, 1, 5, 12, map, WALL);
+  		generateRandomArea(1, 1, 2, 2, 2, 2, map, WINNER);
     }
   
-  else // hard map generation
-  {
-  	wall_amount = rand() % 11 + 10;
-    /*
-    for (int wall_num = 0; wall_num < wall_amount; wall_num++)
-    {
-    	wall_length = rand() % 8 + 3;
-      wall_spawn_x = rand();
-      wall_spawn_y = rand();
-    }
-    */
-  }
-  
-  printBoard(map);
+  	else // hard map generation
+  	{
+  		generateRandomArea(10, 11, 2, 3, 10, 11, map, WALL);
+  		generateRandomArea(1, 1, 1, 1, 1, 1, map, WINNER);
+  	}
+  	while(player_spawn_x == -1 && player_spawn_y == -1 && map[player_spawn_x][player_spawn_y] != 0)
+  	{
+  		player_spawn_x = rand() % 80;
+  		player_spawn_y = rand() % 21;
+	}
+  	printBoard(map);
+  	player.spawn(player_spawn_x, player_spawn_y);
 
-//do something based on the level selected from previous while loop
-
-  // make the player
-	Actor player(PLAYER_CHAR, 10,10, 100, PLAYER_COLOUR);
   
 	// make the goose
 	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);

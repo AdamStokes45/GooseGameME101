@@ -48,7 +48,8 @@ class Actor
   /* check for whether actor can move, and if so, by defaul clears current location,
      then moves the actor to x + delta_x, y + delta_y, and draws actor */
     void update_location(int delta_x, int delta_y, bool clearCurrentLocation=true);
-
+	
+	void spawn(int spawn_x, int spawn_y);
   // draws actor at current location
     void put_actor() const;
     

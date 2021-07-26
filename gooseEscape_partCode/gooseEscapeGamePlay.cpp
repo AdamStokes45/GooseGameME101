@@ -23,41 +23,57 @@ extern Console out;
 
 
 
-    
 void printBoard(int map[MAP_X][MAP_Y])
 {
 	for (int col = 0; col < MAP_X; col++)
   	{
   		for (int row = 0; row < MAP_Y; row++)
     	{
-      		for (int row = 0; row < MAP_Y; row++)
-    			{
-      			if (map[col][row] == 1)
-      			{
-      				terminal_put(col, row, WALL_CHAR);
-						}	
+      		if (map[col][row] == 1)
+      			terminal_put(col, row, WALL_CHAR);
             else if (map[col][row] == 2)
-            {
               terminal_put(col, row, WIN_CHAR);
-            }
             else if (map[col][row] == 3)
-            {
-              terminal_put(col, row, EASY_CHAR);
-            }	
-              else if (map[col][row] == 4)
-            {
+              terminal_put(col, row, EASY_CHAR);	
+            else if (map[col][row] == 4)
               terminal_put(col, row, MEDIUM_CHAR);
-            }
             else if (map[col][row] == 5)
-            {
               terminal_put(col, row, HARD_CHAR);
-            }
     	}
   	}
-}
 	// after putting items on the game board, refresh the terminal to see the items
 	terminal_refresh();
 }
+void setArea(int length, int width, int area, int map[MAP_X][MAP_Y])
+{
+	int spawn_x = rand() % (MAP_X - length);
+    int spawn_y = rand() % (MAP_Y - length);
+	for (int col = 0; col < length; col++)
+    {
+       	for (int row = 0; row < width; row++)
+       	{
+       		map[spawn_x + col][spawn_y + row] = area;
+		}
+	}
+}
+void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area)
+{
+	int amount = rand() % amount_range + amount_lower;
+	for (int num = 0; num < amount; num++)
+	{
+		int width = rand() % width_range + width_lower;
+    	int length = rand() % length_range + length_lower;
+
+      	int orientation = rand() % 2;
+	      
+      	if (orientation == 0)
+			setArea(length, width, area, map);
+      	else
+      		setArea(width, length, area, map);
+
+	}
+}
+
 
 /*
     Do something when the goose captures the player

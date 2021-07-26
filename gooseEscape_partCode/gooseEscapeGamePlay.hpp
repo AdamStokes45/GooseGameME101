@@ -88,4 +88,5 @@ void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);
 
 void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected);
 
+void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area);
 #endif
