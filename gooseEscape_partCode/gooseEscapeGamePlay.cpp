@@ -142,12 +142,7 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 	 
 	
 	if (map[player.get_x()][player.get_y()] == 2)//win square num
-	{
 		win = 1;
-	}
-	
-	
-	
 }
 
 void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
@@ -213,5 +208,14 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 	}
 }
 
-
+bool validKeyPress(int key)
+{
+	int validKeys[6] = {TK_UP, TK_RIGHT, TK_LEFT, TK_DOWN, TK_ESCAPE, TK_CLOSE};
+	for (int i = 0; i < 6; i++)
+	{
+		if (key == validKeys[i])
+			return true;
+	}
+	return false;
+}
 

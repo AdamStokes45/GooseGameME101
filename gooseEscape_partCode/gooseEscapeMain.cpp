@@ -4,7 +4,7 @@
 #include <BearLibTerminal.h>
 #include <cmath>
 #include <ctime>
-#include <iostream>  // Debugging tip:  You can still use cout to put debug messages on the regular console window
+#include <iostream>  
 using namespace std;
 #include "gooseEscapeUtil.hpp"
 #include "gooseEscapeActor.hpp"
@@ -23,16 +23,18 @@ int main()
     terminal_open();
   	terminal_set(SETUP_MESSAGE);
 
+	//Initialize Required variables
 	int level_selected = 0;
 	int goose_spawn_x = 0, goose_spawn_y = 0, player_spawn_x = -1, player_spawn_y = -1;
 	bool win = 0;
 	int powerup = 0;
 	int uses = 0;
+	int keyEntered = TK_A;
 	
 	int map[MAP_X][MAP_Y] = {0};
 
 
-	//easy medium hard maps delcared below																																
+	//easy medium hard map selection zones setup																															
 	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
   	{
   		for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
@@ -43,36 +45,28 @@ int main()
   		}
   	}
 
-    // Call the function to print the game board
+    // print the level selection map
 	printBoard(map);
 
 
 	//make the player
-	Actor player(PLAYER_CHAR, 40, 8, 100, PLAYER_COLOUR);
+	Actor player(PLAYER_CHAR, 40, 7, 100, PLAYER_COLOUR);
 
-	//select level
-	int keyEntered = TK_A;
-
+	//movement required to select level
  	while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && level_selected == 0)
 	{
-	    // get player key press
 	    keyEntered = terminal_read();
 
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE)
-        {
-            // move the player, you can modify this function
     	    moveStarter(keyEntered, player, map, level_selected);	  
-  		}
 	}
-  
-  	cout << "Level: " << level_selected;
 	
-	terminal_clear_area(0, 0, MAP_X, MAP_Y);
-	terminal_refresh();
+	//after selecting the level clears the selection zones from the terminal and map
+	terminal_clear_area(27, 9, 27, 3);
   	
-  	for (int col = 0; col < MAP_X; col++)
+  	for (int col = 27; col < 54; col++)
   	{
-  		for (int row = 0; row < MAP_Y; row++)
+  		for (int row = 9; row < 12; row++)
   		{
   			map[col][row] = 0;
 		}
@@ -100,44 +94,50 @@ int main()
   		generateRandomArea(10, 11, 2, 3, 10, 11, map, WALL);
   		generateRandomArea(1, 1, 1, 1, 1, 1, map, WINNER);
   	}
+  	
+  	//randomizes player spawn point and makes sure to spawn in a clear area
   	while(player_spawn_x == -1 && player_spawn_y == -1 && map[player_spawn_x][player_spawn_y] != 0)
   	{
   		player_spawn_x = rand() % 80;
   		player_spawn_y = rand() % 21;
 	}
+	
   	printBoard(map);
-  	
-  	player.spawn(player_spawn_x, player_spawn_y);
+  	//newly added player function that
+  	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
 
   
 	// make the goose
 	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);
     
-	// Printing the instructions in the console window
+	// Printing the game instructions in the console window
     out.writeLine("Escape the Goose! " + monster.get_location_string());
 	out.writeLine("Use the arrow keys to move");
 	out.writeLine("If the goose catches you, you lose!");
 	out.writeLine("Be careful! Sometimes the goose can jump through walls!");
-
-
-      // can be any valid value that is not ESCAPE or CLOSE
     
+    //game movement
     while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE 
                     && !captured(player,monster) && !win)
 	{
 	    // get player key press
 	    keyEntered = terminal_read();
 
-        if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE)
+		//valid key press checks that the player is hitting one of the arrow keys or the escape or close key
+		//otherwise if the player was hitting arbitrary keys the player would miss their turn and the goose would move
+        if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && validKeyPress(keyEntered))
         {
-            // move the player, you can modify this function
             if(powerup == 0)//has to be before powerups so they activate for next turn
-            {
             	movePlayer(keyEntered, player, map, win, powerup, uses);
-			}
             else if(powerup == 1 && uses > 0)//jumping two squares
             {
             	movePlayer(keyEntered, player, map, win, powerup, uses);
+            	
+            	do
+            	{
+            		keyEntered = terminal_read();
+				} while (!validKeyPress(keyEntered));
+            	
             	movePlayer(keyEntered, player, map, win, powerup, uses);
             	uses --;
 			}
@@ -151,13 +151,13 @@ int main()
 			}
     	    
     	    if (uses == 0)
-			{
 				powerup = 0;
-			}
-	    
-    	    // call the goose's chase function
-    	    moveGoose(player, monster, map);
-    	    // call other functions to do stuff?
+	    	
+	    	// there are scenarios where the player moves on top of the goose and the goose moves away from the player
+	    	// this if statement stops the goose from moving if the player is already caught
+    	    if (!captured(player,monster)) 
+    	    	moveGoose(player, monster, map); //moves the goose towards the player
+    	    
     	    
   		}
 	}
