@@ -29,6 +29,8 @@ const int HARD = 5;
 const int MAP_X = 80;
 const int MAP_Y = 21;
 const int LEVEL_SELECT_SIZE = 3;
+const int INFO_SIZE = 4;
+
 
 
 /*
@@ -90,9 +92,11 @@ void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);
 
 void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected);
 
-void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area);
+void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area, int info[INFO_SIZE]);
 
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y]);
+
+bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width);
 
 bool validKeyPress(int key);
 

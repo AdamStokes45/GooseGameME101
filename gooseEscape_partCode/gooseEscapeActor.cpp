@@ -98,6 +98,18 @@ void Actor:: update_location(int delta_x, int delta_y, bool clearCurrentLocation
         put_actor();
     }
 }
+ // new function required for simulation, moves the player but doesn't show it
+void Actor:: update_virtual_location(int delta_x, int delta_y, bool clearCurrentLocation)
+{
+    if (can_move(delta_x, delta_y))
+    {
+        if (clearCurrentLocation)
+            terminal_clear_area(location_x, location_y, 1, 1);
+        location_x += delta_x;
+        location_y += delta_y;
+        put_actor();
+    }
+}
 
 void Actor:: put_actor() const
 {

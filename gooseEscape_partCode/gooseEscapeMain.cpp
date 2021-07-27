@@ -26,6 +26,8 @@ int main()
 	//Initialize Required variables
 	int level_selected = 0;
 	int goose_spawn_x = 0, goose_spawn_y = 0, player_spawn_x = -1, player_spawn_y = -1;
+	int win_info[INFO_SIZE] = {0};
+	int wall_info[INFO_SIZE] = {0};
 	bool win = 0;
 	int powerup = 0;
 	int uses = 0;
@@ -51,7 +53,14 @@ int main()
 
 	//make the player
 	Actor player(PLAYER_CHAR, 40, 7, 100, PLAYER_COLOUR);
-
+	
+	
+	//Menu Instructions
+	out.writeLine("Use the arrow keys to move the player and select a difficulty!");
+	out.writeLine("E - Easy");
+	out.writeLine("M - Medium");
+	out.writeLine("H - Hard");
+	
 	//movement required to select level
  	while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && level_selected == 0)
 	{
@@ -74,16 +83,16 @@ int main()
   	
 	if (level_selected == 3) // easy map generation
   	{
-  		generateRandomArea(1, 3, 1, 1, 3, 8, map, WALL);
-  		generateRandomArea(1, 1, 2, 3, 2, 3, map, WINNER);
+  		generateRandomArea(1, 3, 1, 1, 3, 8, map, WALL, wall_info);
+  		generateRandomArea(1, 1, 2, 3, 2, 3, map, WINNER, win_info);
   		
   		powerupGen(1,10,map);
   		powerupGen(2,5,map);
   	}
 	else if (level_selected == 4) // medium map generation
   	{
-  		generateRandomArea(3, 8, 1, 1, 5, 12, map, WALL);
-  		generateRandomArea(1, 1, 2, 2, 2, 2, map, WINNER);
+  		generateRandomArea(3, 8, 1, 1, 5, 12, map, WALL, wall_info);
+  		generateRandomArea(1, 1, 2, 2, 2, 2, map, WINNER, win_info);
   		
   		powerupGen(1,5,map);
   		powerupGen(2,2,map);
@@ -91,15 +100,16 @@ int main()
   
   	else // hard map generation
   	{
-  		generateRandomArea(10, 11, 2, 3, 10, 11, map, WALL);
-  		generateRandomArea(1, 1, 1, 1, 1, 1, map, WINNER);
+  		generateRandomArea(10, 11, 2, 3, 10, 11, map, WALL, wall_info);
+  		generateRandomArea(1, 1, 1, 1, 1, 1, map, WINNER, win_info);
   	}
   	
   	//randomizes player spawn point and makes sure to spawn in a clear area
-  	while(player_spawn_x == -1 && player_spawn_y == -1 && map[player_spawn_x][player_spawn_y] != 0)
+  	while(player_spawn_x <= 0 && player_spawn_y <= 0 || map[player_spawn_x][player_spawn_y] != 0)
   	{
   		player_spawn_x = rand() % 80;
   		player_spawn_y = rand() % 21;
+  		cout << map[player_spawn_x][player_spawn_y] << endl;
 	}
 	
   	printBoard(map);
@@ -131,13 +141,7 @@ int main()
             	movePlayer(keyEntered, player, map, win, powerup, uses);
             else if(powerup == 1 && uses > 0)//jumping two squares
             {
-            	movePlayer(keyEntered, player, map, win, powerup, uses);
-            	
-            	do
-            	{
-            		keyEntered = terminal_read();
-				} while (!validKeyPress(keyEntered));
-            	
+            	movePlayer(keyEntered, player, map, win, powerup, uses);       	
             	movePlayer(keyEntered, player, map, win, powerup, uses);
             	uses --;
 			}

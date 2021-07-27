@@ -49,7 +49,7 @@ void printBoard(int map[MAP_X][MAP_Y])
 	terminal_refresh();
 }
 
-void setArea(int length, int width, int area, int map[MAP_X][MAP_Y])
+void setArea(int length, int width, int area, int map[MAP_X][MAP_Y], int info[INFO_SIZE])
 {
 	int spawn_x = rand() % (MAP_X - length);
     int spawn_y = rand() % (MAP_Y - length);
@@ -60,21 +60,24 @@ void setArea(int length, int width, int area, int map[MAP_X][MAP_Y])
        		map[spawn_x + col][spawn_y + row] = area;
 		}
 	}
+	info[0] = spawn_x;
+	info[1] = spawn_y;
 }
-void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area)
+void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area, int info[INFO_SIZE])
 {
 	int amount = rand() % amount_range + amount_lower;
 	for (int num = 0; num < amount; num++)
 	{
 		int width = rand() % width_range + width_lower;
     	int length = rand() % length_range + length_lower;
-
+		info[2] = length;
+		info[3] = width;
       	int orientation = rand() % 2;
 	      
       	if (orientation == 0)
-			setArea(length, width, area, map);
+			setArea(length, width, area, map, info);
       	else
-      		setArea(width, length, area, map);
+      		setArea(width, length, area, map, info);
 
 	}
 }
@@ -218,4 +221,52 @@ bool validKeyPress(int key)
 	}
 	return false;
 }
+
+int findClosestTile(int player_location, int win_location, int win_size)
+{
+	int closestTile = 0;
+	int distance = 1000;
+	for (int tileNum = 0; tileNum < win_size; tileNum++)
+	{
+		if (abs(win_location+tileNum-player_location) < distance)
+		{
+			distance = abs(win_location-player_location);
+			closestTile = win_location + tileNum;
+		}
+	}
+	return closestTile;
+}
+
+bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width)
+{
+	int count = 0;
+	int closestWinX = findClosestTile(player.get_x(), win_x, win_length);
+	int closestWinY = findClosestTile(player.get_y(), win_y, win_width);
+	int yMove = 0, xMove = 0;
+    if (abs(player.get_x() - closestWinX) > abs(player.get_y() - closestWinY) && map[player.get_x() + 1][player.get_y()] != WALL && map[player.get_x() - 1][player.get_y()] != WALL)
+    {
+    	if (player.get_x() < closestWinX)
+      		xMove = 1;
+		else 
+      		xMove = -1;
+	}
+    else
+    {
+      	if (player.get_y() < closestWinY && map[player.get_x()][player.get_y()+1] != WALL)
+        	yMove = 1;
+    	else if (map[player.get_x()][player.get_y()-1] != WALL)
+        	yMove = -1;
+    }
+    while (map[player.get_x()][player.get_y()] != 2 && !captured)
+    {
+    	if (player.can_move(xMove, yMove) &&
+		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
+			player.update_virtual_location(xMove, yMove);
+		count++;
+	}
+	return count;
+    
+}
+
+
 
