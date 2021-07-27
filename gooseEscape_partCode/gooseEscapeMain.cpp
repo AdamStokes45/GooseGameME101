@@ -109,7 +109,6 @@ int main()
   	{
   		player_spawn_x = rand() % 80;
   		player_spawn_y = rand() % 21;
-  		cout << map[player_spawn_x][player_spawn_y] << endl;
 	}
 	
   	printBoard(map);
@@ -132,7 +131,8 @@ int main()
 	{
 	    // get player key press
 	    keyEntered = terminal_read();
-
+		if (keyEntered == TK_SPACE)
+      		testMap(player, map, win_info[0], win_info[1], win_info[2], win_info[3], win);
 		//valid key press checks that the player is hitting one of the arrow keys or the escape or close key
 		//otherwise if the player was hitting arbitrary keys the player would miss their turn and the goose would move
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && validKeyPress(keyEntered))

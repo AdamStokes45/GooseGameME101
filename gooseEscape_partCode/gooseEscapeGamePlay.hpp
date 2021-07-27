@@ -96,7 +96,7 @@ void generateRandomArea(int amount_lower, int amount_range, int width_lower, int
 
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y]);
 
-bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width);
+bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win);
 
 bool validKeyPress(int key);
 

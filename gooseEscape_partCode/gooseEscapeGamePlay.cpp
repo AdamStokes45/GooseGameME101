@@ -237,7 +237,7 @@ int findClosestTile(int player_location, int win_location, int win_size)
 	return closestTile;
 }
 
-bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width)
+bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win)
 {
 	int count = 0;
 	int closestWinX = findClosestTile(player.get_x(), win_x, win_length);
@@ -257,15 +257,12 @@ bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int wi
     	else if (map[player.get_x()][player.get_y()-1] != WALL)
         	yMove = -1;
     }
-    while (map[player.get_x()][player.get_y()] != 2 && !captured)
-    {
     	if (player.can_move(xMove, yMove) &&
 		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
 			player.update_virtual_location(xMove, yMove);
-		count++;
-	}
-	return count;
-    
+			
+		if (map[player.get_x()][player.get_y()] == 2)//win square num
+		win = 1;
 }
 
 
