@@ -39,11 +39,16 @@ void printBoard(int map[MAP_X][MAP_Y])
               terminal_put(col, row, MEDIUM_CHAR);
             else if (map[col][row] == 5)
               terminal_put(col, row, HARD_CHAR);
+            else if (map[col][row] == 6)
+              terminal_put(col, row, POWER_1);
+            else if (map[col][row] == 7)
+              terminal_put(col, row, POWER_2);
     	}
   	}
 	// after putting items on the game board, refresh the terminal to see the items
 	terminal_refresh();
 }
+
 void setArea(int length, int width, int area, int map[MAP_X][MAP_Y])
 {
 	int spawn_x = rand() % (MAP_X - length);
@@ -103,7 +108,7 @@ bool captured(Actor const & player, Actor const & monster)
 
     Going further: You could decide to learn about switch statements
 */
-void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win)
+void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int & powerup, int & uses)
 {
     int yMove = 0, xMove = 0;
     if (key == TK_UP)
@@ -114,15 +119,35 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win)
         xMove = -1;
     else if (key == TK_RIGHT)
         xMove = 1;
-    
-    if (player.can_move(xMove, yMove) &&
+	
+	
+	if (player.can_move(xMove, yMove) &&
 		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
 		player.update_location(xMove, yMove);
-		
-	if (map[player.get_x()][player.get_y()] == 2)
+	
+	
+	if (map[player.get_x()][player.get_y()] == 6)//first powerup square num
+	{
+		powerup = 1;
+		uses = 5;//clicks the powerup is good for
+		map[player.get_x()][player.get_y()] = 0;//resets the tile so doesnt reprint when map is re-printed
+	}
+	
+	if (map[player.get_x()][player.get_y()] == 7)//second powerup square num
+	{
+		powerup = 2;
+		uses = 1;
+		map[player.get_x()][player.get_y()] = 0;
+	}    
+	 
+	
+	if (map[player.get_x()][player.get_y()] == 2)//win square num
 	{
 		win = 1;
-	}     	
+	}
+	
+	
+	
 }
 
 void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
@@ -172,6 +197,20 @@ void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_se
     
     if (map[starter.get_x()][starter.get_y()] != 0)
 		level_selected = map[starter.get_x()][starter.get_y()];
+}
+
+void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
+{
+	for(int count = 0; count < num; count++)
+	{
+		int x_power = rand() % 80;
+		int y_power = rand() % 21;
+		
+		if(map[x_power][y_power] == 0)
+		{
+			map[x_power][y_power] = type + 5;// + 5 because it should be 6 char for the first powerup
+		}
+	}
 }
 
 

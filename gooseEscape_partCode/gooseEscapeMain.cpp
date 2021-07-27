@@ -26,6 +26,8 @@ int main()
 	int level_selected = 0;
 	int goose_spawn_x = 0, goose_spawn_y = 0, player_spawn_x = -1, player_spawn_y = -1;
 	bool win = 0;
+	int powerup = 0;
+	int uses = 0;
 	
 	int map[MAP_X][MAP_Y] = {0};
 
@@ -80,11 +82,17 @@ int main()
   	{
   		generateRandomArea(1, 3, 1, 1, 3, 8, map, WALL);
   		generateRandomArea(1, 1, 2, 3, 2, 3, map, WINNER);
+  		
+  		powerupGen(1,10,map);
+  		powerupGen(2,5,map);
   	}
 	else if (level_selected == 4) // medium map generation
   	{
   		generateRandomArea(3, 8, 1, 1, 5, 12, map, WALL);
   		generateRandomArea(1, 1, 2, 2, 2, 2, map, WINNER);
+  		
+  		powerupGen(1,5,map);
+  		powerupGen(2,2,map);
     }
   
   	else // hard map generation
@@ -98,6 +106,7 @@ int main()
   		player_spawn_y = rand() % 21;
 	}
   	printBoard(map);
+  	
   	player.spawn(player_spawn_x, player_spawn_y);
 
   
@@ -122,7 +131,29 @@ int main()
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE)
         {
             // move the player, you can modify this function
-    	    movePlayer(keyEntered, player, map,win);
+            if(powerup == 0)//has to be before powerups so they activate for next turn
+            {
+            	movePlayer(keyEntered, player, map, win, powerup, uses);
+			}
+            else if(powerup == 1 && uses > 0)//jumping two squares
+            {
+            	movePlayer(keyEntered, player, map, win, powerup, uses);
+            	movePlayer(keyEntered, player, map, win, powerup, uses);
+            	uses --;
+			}
+			else if(powerup == 2 && uses > 0)//jumping 10 squares
+			{
+				for(int moves = 0; moves < 10; moves++)
+				{
+					movePlayer(keyEntered, player, map, win, powerup, uses);
+				}
+            	uses --;
+			}
+    	    
+    	    if (uses == 0)
+			{
+				powerup = 0;
+			}
 	    
     	    // call the goose's chase function
     	    moveGoose(player, monster, map);

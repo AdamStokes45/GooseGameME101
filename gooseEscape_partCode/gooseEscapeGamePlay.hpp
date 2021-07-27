@@ -43,6 +43,8 @@ const int WIN_CHAR = int('%'); //% sign, a special character used in the ancient
 const int EASY_CHAR = int('E');
 const int MEDIUM_CHAR = int('M');
 const int HARD_CHAR = int('H');
+const int POWER_1 = int('1');
+const int POWER_2 = int('2');
 
 /*
 Colours have the format "brightness hue" or "hue", e.g. "white" "light green"
@@ -75,7 +77,7 @@ bool captured(Actor const & player, Actor const & monster);
 /*
     Move the player to a new location based on the user input
 */
-void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win);
+void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int & powerup, int & uses);
 
 /*
     What other functions do you need to make the game work?  What can you add
@@ -89,4 +91,7 @@ void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);
 void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected);
 
 void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area);
+
+void powerupGen(int type, int num, int map[MAP_X][MAP_Y]);
+
 #endif
