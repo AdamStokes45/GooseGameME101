@@ -135,7 +135,7 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 		map[player.get_x() + xMove][player.get_y() + yMove] == WALL && powerup == 3)//only works for walls up to 4 for some reason, and walls bordered to walls glitch it out
 		{
 			int wall_hop = 1;
-			while(map[player.get_x() + wall_hop][player.get_y() + wall_hop] == WALL)
+			while(map[player.get_x() + xMove*wall_hop][player.get_y() + yMove*wall_hop] == WALL)
 			{
 				wall_hop += 1;
 			}
@@ -146,31 +146,34 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 		
 	int location_on_map = map[player.get_x()][player.get_y()];
 	
-	
-	if (map[player.get_x()][player.get_y()] == 6)//first powerup square num
+	if(map[player.get_x()][player.get_y()] > 0)//only runs if hits a powerup or win square
 	{
-		powerup = 1;
-		uses = 5;//clicks the powerup is good for
-		map[player.get_x()][player.get_y()] = 0;//resets the tile so doesnt reprint when map is re-printed
+		if (map[player.get_x()][player.get_y()] == 6)//first powerup square num
+		{
+			powerup = 1;
+			uses = 5;//clicks the powerup is good for
+			map[player.get_x()][player.get_y()] = 0;//resets the tile so doesnt reprint when map is re-printed
+		}
+		
+		if (map[player.get_x()][player.get_y()] == 7)//second powerup square num
+		{
+			powerup = 2;
+			uses = 1;
+			map[player.get_x()][player.get_y()] = 0;
+		}    
+		 
+		if (map[player.get_x()][player.get_y()] == 8)//second powerup square num
+		{
+			powerup = 3;
+			uses = 1;
+			map[player.get_x()][player.get_y()] = 0;
+		}  
+		
+			
+		if (map[player.get_x()][player.get_y()] == 2)//win square num
+			win = 1;
 	}
 	
-	if (map[player.get_x()][player.get_y()] == 7)//second powerup square num
-	{
-		powerup = 2;
-		uses = 1;
-		map[player.get_x()][player.get_y()] = 0;
-	}    
-	 
-	if (map[player.get_x()][player.get_y()] == 8)//second powerup square num
-	{
-		powerup = 3;
-		uses = 1;
-		map[player.get_x()][player.get_y()] = 0;
-	}  
-	
-		
-	if (map[player.get_x()][player.get_y()] == 2)//win square num
-		win = 1;
 		
 	
 }
