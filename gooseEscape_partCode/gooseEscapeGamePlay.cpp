@@ -144,10 +144,13 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 			uses = 0;
 		}
 		
-	int location_on_map = map[player.get_x()][player.get_y()];
+	int location_on_map = map[player.get_x()][player.get_y()];//useless as of now
 	
 	if(map[player.get_x()][player.get_y()] > 0)//only runs if hits a powerup or win square
 	{
+		if (map[player.get_x()][player.get_y()] == 2)//win square num
+			win = 1;
+			
 		if (map[player.get_x()][player.get_y()] == 6)//first powerup square num
 		{
 			powerup = 1;
@@ -158,20 +161,17 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 		if (map[player.get_x()][player.get_y()] == 7)//second powerup square num
 		{
 			powerup = 2;
-			uses = 1;
 			map[player.get_x()][player.get_y()] = 0;
 		}    
 		 
 		if (map[player.get_x()][player.get_y()] == 8)//second powerup square num
 		{
 			powerup = 3;
-			uses = 1;
 			map[player.get_x()][player.get_y()] = 0;
 		}  
 		
 			
-		if (map[player.get_x()][player.get_y()] == 2)//win square num
-			win = 1;
+		
 	}
 	
 		
@@ -234,11 +234,21 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 		int x_power = rand() % 80;
 		int y_power = rand() % 21;
 		
-		if(map[x_power][y_power] == 0)
+		bool placed = false;
+		
+		while(!placed)
 		{
-			map[x_power][y_power] = type + 5;// + 5 because it should be 6 char for the first powerup
-		}
+			if(map[x_power][y_power] == 0)
+			{
+				map[x_power][y_power] = type + 5;// + 5 because it should be 6 char for the first powerup
+				placed = true;
+			}
+		}	
+		
 	}
+	
+	map[40][1] = 6;
+	map[42][1] = 7;
 }
 
 bool validKeyPress(int key)
