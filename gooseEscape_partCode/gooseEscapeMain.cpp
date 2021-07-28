@@ -87,7 +87,8 @@ int main()
   		generateRandomArea(1, 1, 2, 3, 2, 3, map, WINNER, win_info);
   		
   		powerupGen(1,10,map);
-  		powerupGen(2,5,map);
+  		powerupGen(2,20,map);
+  		powerupGen(3,20,map);
   	}
 	else if (level_selected == 4) // medium map generation
   	{
@@ -102,6 +103,8 @@ int main()
   	{
   		generateRandomArea(10, 11, 2, 3, 10, 11, map, WALL, wall_info);
   		generateRandomArea(1, 1, 1, 1, 1, 1, map, WINNER, win_info);
+  		
+  		powerupGen(3,20,map);
   	}
   	
   	//randomizes player spawn point and makes sure to spawn in a clear area
@@ -124,6 +127,9 @@ int main()
 	out.writeLine("Use the arrow keys to move");
 	out.writeLine("If the goose catches you, you lose!");
 	out.writeLine("Be careful! Sometimes the goose can jump through walls!");
+	out.writeLine("Powerup 1: Move 2 squares for next 5 turns");
+	out.writeLine("Powerup 2: Move 10 squares for next turn");
+	out.writeLine("Powerup 3: Move through 1 wall anytime");
     
     //game movement
     while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE 
@@ -137,14 +143,19 @@ int main()
 		//otherwise if the player was hitting arbitrary keys the player would miss their turn and the goose would move
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && validKeyPress(keyEntered))
         {
-            if(powerup == 0)//has to be before powerups so they activate for next turn
+            if(powerup == 0  || powerup == 3)//has to be before powerups so they activate for next turn
+            {
             	movePlayer(keyEntered, player, map, win, powerup, uses);
+			}
+            	
+            	
             else if(powerup == 1 && uses > 0)//jumping two squares
             {
-            	movePlayer(keyEntered, player, map, win, powerup, uses);       	
+            	movePlayer(keyEntered, player, map, win, powerup, uses);     	
             	movePlayer(keyEntered, player, map, win, powerup, uses);
             	uses --;
 			}
+			
 			else if(powerup == 2 && uses > 0)//jumping 10 squares
 			{
 				for(int moves = 0; moves < 10; moves++)
@@ -154,13 +165,16 @@ int main()
             	uses --;
 			}
     	    
+    	    
+			
     	    if (uses == 0)
 				powerup = 0;
 	    	
-	    	// there are scenarios where the player moves on top of the goose and the goose moves away from the player
-	    	// this if statement stops the goose from moving if the player is already caught
+	    	
     	    if (!captured(player,monster)) 
+    	    {
     	    	moveGoose(player, monster, map); //moves the goose towards the player
+			}
     	    
     	    
   		}

@@ -47,6 +47,7 @@ const int MEDIUM_CHAR = int('M');
 const int HARD_CHAR = int('H');
 const int POWER_1 = int('1');
 const int POWER_2 = int('2');
+const int POWER_3 = int('3');
 
 /*
 Colours have the format "brightness hue" or "hue", e.g. "white" "light green"

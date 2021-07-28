@@ -43,6 +43,8 @@ void printBoard(int map[MAP_X][MAP_Y])
               terminal_put(col, row, POWER_1);
             else if (map[col][row] == 7)
               terminal_put(col, row, POWER_2);
+            else if (map[col][row] == 8)
+              terminal_put(col, row, POWER_3);
     	}
   	}
 	// after putting items on the game board, refresh the terminal to see the items
@@ -126,7 +128,23 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 	
 	if (player.can_move(xMove, yMove) &&
 		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
-		player.update_location(xMove, yMove);
+		{
+			player.update_location(xMove, yMove);
+		}
+	else if(player.can_move(xMove, yMove) &&
+		map[player.get_x() + xMove][player.get_y() + yMove] == WALL && powerup == 3)//only works for walls up to 4 for some reason, and walls bordered to walls glitch it out
+		{
+			int wall_hop = 1;
+			while(map[player.get_x() + wall_hop][player.get_y() + wall_hop] == WALL)
+			{
+				wall_hop += 1;
+			}
+			player.update_location(wall_hop*xMove, wall_hop*yMove);
+			powerup = 0;
+			uses = 0;
+		}
+		
+	int location_on_map = map[player.get_x()][player.get_y()];
 	
 	
 	if (map[player.get_x()][player.get_y()] == 6)//first powerup square num
@@ -143,9 +161,18 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 		map[player.get_x()][player.get_y()] = 0;
 	}    
 	 
+	if (map[player.get_x()][player.get_y()] == 8)//second powerup square num
+	{
+		powerup = 3;
+		uses = 1;
+		map[player.get_x()][player.get_y()] = 0;
+	}  
 	
+		
 	if (map[player.get_x()][player.get_y()] == 2)//win square num
 		win = 1;
+		
+	
 }
 
 void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
@@ -166,10 +193,10 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
           yMove = -1;
     }
     
-    if (map[goose.get_x()][goose.get_y()] == 1 || map[goose.get_x()][goose.get_y()] == 2)
+    if (map[goose.get_x()][goose.get_y()] != 0)
     {
     	goose.update_location(xMove, yMove);//moves goose
-			printBoard(map);//re prints board where to cover where goose overlapped
+		printBoard(map);//re prints board where to cover where goose overlapped
    		goose.update_location(0,0);//reprints goose incase hes still on the wall and got written over
 	}
 	else
