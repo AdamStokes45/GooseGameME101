@@ -51,7 +51,7 @@ void printBoard(int map[MAP_X][MAP_Y])
 	terminal_refresh();
 }
 
-void setArea(int length, int width, int area, int map[MAP_X][MAP_Y], int info[INFO_SIZE])
+void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE])
 {
 	int spawn_x = rand() % (MAP_X - length);
     int spawn_y = rand() % (MAP_Y - length);
@@ -59,32 +59,58 @@ void setArea(int length, int width, int area, int map[MAP_X][MAP_Y], int info[IN
     {
        	for (int row = 0; row < width; row++)
        	{
-       		map[spawn_x + col][spawn_y + row] = area;
+       		map[spawn_x + col][spawn_y + row] = WINNER;
 		}
 	}
-	info[0] = spawn_x;
-	info[1] = spawn_y;
+	win_info[0] = spawn_x;
+	win_info[1] = spawn_y;
 }
-void generateRandomArea(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int area, int info[INFO_SIZE])
+
+void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE])
+{
+
+	int width = rand() % width_range + width_lower;
+    int length = rand() % length_range + length_lower;
+	win_info[2] = length;
+	win_info[3] = width;
+    int orientation = rand() % 2;
+	 
+    if (orientation == 0)
+		setWin(length, width, map, win_info);
+    else
+      	setWin(width, length, map, win_info);
+
+
+}
+
+void setWall (int length, int width, int map[MAP_X][MAP_Y])
+{
+	int spawn_x = rand() % (MAP_X - length);
+    int spawn_y = rand() % (MAP_Y - length);
+	for (int col = 0; col < length; col++)
+    {
+       	for (int row = 0; row < width; row++)
+       	{
+       		map[spawn_x + col][spawn_y + row] = WALL;
+		}
+	}
+}
+
+void generateRandomWall(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y])
 {
 	int amount = rand() % amount_range + amount_lower;
 	for (int num = 0; num < amount; num++)
 	{
 		int width = rand() % width_range + width_lower;
     	int length = rand() % length_range + length_lower;
-		info[2] = length;
-		info[3] = width;
       	int orientation = rand() % 2;
-	      
       	if (orientation == 0)
-			setArea(length, width, area, map, info);
+			setWall(length, width, map);
       	else
-      		setArea(width, length, area, map, info);
+      		setWall(width, length, map);
 
 	}
 }
-
-
 /*
     Do something when the goose captures the player
 

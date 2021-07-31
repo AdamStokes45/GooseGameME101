@@ -27,7 +27,6 @@ int main()
 	int level_selected = 0;
 	int goose_spawn_x = 0, goose_spawn_y = 0, player_spawn_x = -1, player_spawn_y = -1;
 	int win_info[INFO_SIZE] = {0};
-	int wall_info[INFO_SIZE] = {0};
 	bool win = 0;
 	int powerup = 0;
 	int uses = 0;
@@ -80,19 +79,19 @@ int main()
   			map[col][row] = 0;
 		}
 	}
-  	
+  	cout << "1";
 	if (level_selected == 3) // easy map generation
   	{
-  		generateRandomArea(1, 3, 1, 1, 3, 8, map, WALL, wall_info);
-  		generateRandomArea(1, 1, 2, 3, 2, 3, map, WINNER, win_info);
+  		generateRandomWall(1, 3, 1, 1, 3, 8, map);
+  		generateRandomWin(2, 3, 2, 3, map, win_info);
   		
   		powerupGen(1,10,map);
   		powerupGen(2,5,map);
   	}
 	else if (level_selected == 4) // medium map generation
   	{
-  		generateRandomArea(3, 8, 1, 1, 5, 12, map, WALL, wall_info);
-  		generateRandomArea(1, 1, 2, 2, 2, 2, map, WINNER, win_info);
+  		generateRandomWall(3, 8, 1, 1, 5, 12, map);
+  		generateRandomWin(2, 2, 2, 2, map, win_info);
   		
   		powerupGen(1,5,map);
   		powerupGen(2,2,map);
@@ -101,9 +100,9 @@ int main()
   
   	else // hard map generation
   	{
-  		generateRandomArea(10, 11, 2, 3, 10, 11, map, WALL, wall_info);
-  		generateRandomArea(1, 1, 1, 1, 1, 1, map, WINNER, win_info);
-  		
+  		generateRandomWall(10, 11, 2, 3, 10, 11, map);
+  		generateRandomWin(1, 1, 1, 1, map, win_info);
+
   		powerupGen(1,2,map);
   	}
   	
@@ -115,7 +114,6 @@ int main()
 	}
 	
   	printBoard(map);
-  	//newly added player function that
   	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
 
   
@@ -182,7 +180,7 @@ int main()
 				powerup = 0;
 	    	
 	    	
-    	    if (!captured(player,monster)) 
+    	    if (!captured(player,monster) and !win) 
     	    {
     	    	moveGoose(player, monster, map); //moves the goose towards the player
 			}
