@@ -274,7 +274,7 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 	}
 	
 	map[40][1] = 6;
-	map[42][1] = 7;
+	map[43][1] = 7;
 }
 
 bool validKeyPress(int key)

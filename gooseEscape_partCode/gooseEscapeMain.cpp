@@ -79,7 +79,7 @@ int main()
   			map[col][row] = 0;
 		}
 	}
-  	cout << "1";
+  	//cout << "1";
 	if (level_selected == 3) // easy map generation
   	{
   		generateRandomWall(1, 3, 1, 1, 3, 8, map);
@@ -151,14 +151,17 @@ int main()
             {
             	for(int moves = 0; moves < 2; moves++)
 				{
-					
 					movePlayer(keyEntered, player, map, win, powerup, uses);
+					powerup = 1;
 					if(win)
 					{
 						moves = 2;
 					}
 				}
             	uses --;
+            	
+            	if (uses == 0)
+					powerup = 0;
 			}
 			
 			else if(powerup == 2)//jumping 10 squares
@@ -176,13 +179,12 @@ int main()
     	    
     	    
 			
-    	    if (uses == 0)
-				powerup = 0;
+    	    
 	    	
 	    	
     	    if (!captured(player,monster) and !win) 
     	    {
-    	    	moveGoose(player, monster, map); //moves the goose towards the player
+    	    	//moveGoose(player, monster, map); //moves the goose towards the player
 			}
     	    
     	    
