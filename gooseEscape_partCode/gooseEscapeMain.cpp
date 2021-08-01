@@ -100,9 +100,9 @@ int main()
   		generateRandomWin(2, 2, 2, 2, map, win_info);
   		cout << "After Win Generation" << endl;
   		
-  		//powerupGen(1,5,map);
-  		//powerupGen(2,2,map);
-  		//powerupGen(3,2,map);
+  		powerupGen(1,5,map);
+  		powerupGen(2,2,map);
+  		powerupGen(3,2,map);
   		cout << "After Powerup Generation" << endl;
     }
   

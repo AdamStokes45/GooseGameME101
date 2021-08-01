@@ -257,15 +257,16 @@ void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_se
 
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 {
+	int x_power = 0;
+	int y_power = 0;
+	bool placed = false;
 	for(int count = 0; count < num; count++)
 	{
-		int x_power = rand() % 80;
-		int y_power = rand() % 21;
-		
-		bool placed = false;
-		
+		placed = false;
 		while(!placed)
 		{
+			x_power = rand() % 80;
+			y_power = rand() % 21;
 			if(map[x_power][y_power] == 0)
 			{
 				map[x_power][y_power] = type + 5;// + 5 because it should be 6 char for the first powerup
@@ -274,9 +275,6 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 		}	
 		
 	}
-	
-	map[40][1] = 6;
-	map[42][1] = 7;
 }
 
 bool validKeyPress(int key)
@@ -311,12 +309,12 @@ void randomPath(int & position, int position2, int & distance, int map[MAP_X][MA
 	if (distance > 0)
 	{	
 		path_length = rand() % distance + 1;	
-		for(int pos = 0; pos <= path_length; pos++)
+		for(int pos = 0; pos < path_length; pos++)
 		{
 			if (x)
-				map[position + pos][position2] = WIN_PATH;
+				map[position + pos][position2] = EMPTY;
 			else
-				map[position2][position + pos] = WIN_PATH;
+				map[position2][position + pos] = EMPTY;
 		}
 		position += path_length;
 		distance -= path_length;
@@ -327,9 +325,9 @@ void randomPath(int & position, int position2, int & distance, int map[MAP_X][MA
 		for(int pos = 0; pos < path_length; pos++)
 		{
 			if (x)
-				map[position - pos][position2] = WIN_PATH;
+				map[position - pos][position2] = EMPTY;
 			else
-				map[position2][position - pos] = WIN_PATH;
+				map[position2][position - pos] = EMPTY;
 		}
 		position -= path_length;
 		distance += path_length;
