@@ -14,7 +14,7 @@ using namespace std;
 extern Console out;
 
 
-//function that will print the game board with specified values for characters
+//print the game board with specified values for characters
 void printBoard(int map[MAP_X][MAP_Y])
 {
 	for (int col = 0; col < MAP_X; col++)
@@ -67,6 +67,7 @@ void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE
 	win_info[1] = spawn_y;
 }
 
+//generates random win location
 void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE])
 {
 
@@ -113,6 +114,7 @@ void generateRandomWall(int amount_lower, int amount_range, int width_lower, int
 	}
 }
 
+//checks if goose has caught player
 bool captured(Actor const & player, Actor const & monster)
 {
     return (player.get_x() == monster.get_x() 
