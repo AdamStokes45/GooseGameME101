@@ -16,10 +16,10 @@ Console out;
 
 int main()
 {
-    // Set up for using rand() to generate random numbers (can be deleted if random numbers not used)
+    // Set up for using rand()
     srand(time(NULL));
 
-	//Set up the window.  Don't edit these two lines
+	//Set up the window
     terminal_open();
   	terminal_set(SETUP_MESSAGE);
 

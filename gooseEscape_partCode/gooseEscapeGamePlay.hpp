@@ -14,6 +14,9 @@ const int WINNER = 2;
 const int EASY = 3;
 const int MEDIUM = 4;
 const int HARD = 5;
+const int POWER_1 = 6;
+const int POWER_2 = 7;
+const int POWER_3 = 8;
 
 const int MAP_X = 80;
 const int MAP_Y = 21;
@@ -28,9 +31,9 @@ const int WIN_CHAR = int('%'); //% sign, a special character used in the ancient
 const int EASY_CHAR = int('E');
 const int MEDIUM_CHAR = int('M');
 const int HARD_CHAR = int('H');
-const int POWER_1 = int('1');
-const int POWER_2 = int('2');
-const int POWER_3 = int('3');
+const int POWER_1_CHAR = int('1');
+const int POWER_2_CHAR = int('2');
+const int POWER_3_CHAR = int('3');
 
 
 const char PLAYER_COLOUR[] = "light sky";
