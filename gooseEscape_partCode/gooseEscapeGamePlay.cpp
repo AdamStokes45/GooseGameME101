@@ -135,14 +135,15 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
     else if (key == TK_RIGHT)
         xMove = 1;
 	
-	
+	//moves player regularly
 	if (player.can_move(xMove, yMove) &&
 		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
 		{
 			player.update_location(xMove, yMove);
 		}
+	//case when powerup 3 (move through wall) is active, and wall is infront of player
 	else if(player.can_move(xMove, yMove) &&
-		map[player.get_x() + xMove][player.get_y() + yMove] == WALL && powerup == 3)//only works for walls up to 4 for some reason, and walls bordered to walls glitch it out
+		map[player.get_x() + xMove][player.get_y() + yMove] == WALL && powerup == 3)
 		{
 			int wall_hop = 1;
 			while(map[player.get_x() + xMove*wall_hop][player.get_y() + yMove*wall_hop] == WALL)
@@ -156,6 +157,7 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 		
 	int location_on_map = map[player.get_x()][player.get_y()];//useless as of now
 	
+	//if the player has gone on a powerup, or win
 	if(map[player.get_x()][player.get_y()] > 0)//only runs if hits a powerup or win square
 	{
 		if (map[player.get_x()][player.get_y()] == WINNER)//win square num
