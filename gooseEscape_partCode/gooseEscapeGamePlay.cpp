@@ -10,19 +10,11 @@ using namespace std;
 #include "gooseEscapeConsole.hpp"
 #include "gooseEscapeGamePlay.hpp"
 
-/*
-    This file is all about the game world.  You will modify this to add
-    functionality to your game, first to get it working, and later to make
-    it fun.
-    
-    If you add or modify functions, be sure to update the prototypes in the
-    gooseEscapeGamePlay.hpp file
-*/
-
+//required
 extern Console out;
 
 
-
+//function that will print the game board with specified values for characters
 void printBoard(int map[MAP_X][MAP_Y])
 {
 	for (int col = 0; col < MAP_X; col++)
@@ -32,27 +24,26 @@ void printBoard(int map[MAP_X][MAP_Y])
       		if (map[col][row] == 1)
       			terminal_put(col, row, WALL_CHAR);
             else if (map[col][row] == 2)
-              	terminal_put(col, row, WIN_CHAR);
-            else if (map[col][row] == 3)
-              	terminal_put(col, row, EASY_CHAR);	
-            else if (map[col][row] == 4)
-              	terminal_put(col, row, MEDIUM_CHAR);
-            else if (map[col][row] == 5)
-              	terminal_put(col, row, HARD_CHAR);
-            else if (map[col][row] == 6)
-             	 terminal_put(col, row, POWER_1);
-            else if (map[col][row] == 7)
-              	terminal_put(col, row, POWER_2);
-            else if (map[col][row] == 8)
-              	terminal_put(col, row, POWER_3);
-            else if (map[col][row] == 9)
-            	terminal_put(col, row, WIN_PATH_CHAR);
+              terminal_put(col, row, WIN_CHAR);
+            else if (map[col][row] == EASY)
+              terminal_put(col, row, EASY_CHAR);	
+            else if (map[col][row] == MEDIUM)
+              terminal_put(col, row, MEDIUM_CHAR);
+            else if (map[col][row] == HARD)
+              terminal_put(col, row, HARD_CHAR);
+            else if (map[col][row] == POWER_1)
+              terminal_put(col, row, POWER_1_CHAR);
+            else if (map[col][row] == POWER_2)
+              terminal_put(col, row, POWER_2_CHAR);
+            else if (map[col][row] == POWER_3)
+              terminal_put(col, row, POWER_3_CHAR);
     	}
   	}
 	// after putting items on the game board, refresh the terminal to see the items
 	terminal_refresh();
 }
 
+//places winning squares down onto board
 void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE])
 {
 	int spawn_x = rand() % (MAP_X - length);
@@ -113,15 +104,6 @@ void generateRandomWall(int amount_lower, int amount_range, int width_lower, int
 
 	}
 }
-/*
-    Do something when the goose captures the player
-
-    At the moment the function just checks to see if the player and the goose
-    are in the same location.  If you want to attack or do something else, this
-    function would need to change.  For example, maybe the two touch each other
-    and then fight.  You could use the health that is given in the Actor class,
-    and update it.  Fight, run, use weapons, it is up to you!
-*/
 
 bool captured(Actor const & player, Actor const & monster)
 {
@@ -129,18 +111,8 @@ bool captured(Actor const & player, Actor const & monster)
          && player.get_y() == monster.get_y());
 }
 
-/*
-    Move the player to a new location based on the user input
-    
-    All key presses start with "TK_" then the character.  So "TK_A" is the A
-    key that was pressed.  At the moment, only the arrow keys are used,
-    but feel free to add more keys that allow the player to do something else
-    like pick up a power up.
-    
-    A look-up table might be useful.
 
-    Going further: You could decide to learn about switch statements
-*/
+//function that moves player, while checking for powerup
 void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int & powerup, int & uses)
 {
     int yMove = 0, xMove = 0;
@@ -176,36 +148,32 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 	
 	if(map[player.get_x()][player.get_y()] > 0)//only runs if hits a powerup or win square
 	{
-		if (map[player.get_x()][player.get_y()] == 2)//win square num
+		if (map[player.get_x()][player.get_y()] == WINNER)//win square num
 			win = 1;
 			
-		if (map[player.get_x()][player.get_y()] == 6)//first powerup square num
+		if (map[player.get_x()][player.get_y()] == POWER_1)//first powerup square num
 		{
 			powerup = 1;
 			uses = 5;//clicks the powerup is good for
 			map[player.get_x()][player.get_y()] = 0;//resets the tile so doesnt reprint when map is re-printed
 		}
 		
-		if (map[player.get_x()][player.get_y()] == 7)//second powerup square num
+		if (map[player.get_x()][player.get_y()] == POWER_2)//second powerup square num
 		{
 			powerup = 2;
 			map[player.get_x()][player.get_y()] = 0;
 		}    
 		 
-		if (map[player.get_x()][player.get_y()] == 8)//second powerup square num
+		if (map[player.get_x()][player.get_y()] == POWER_3)//second powerup square num
 		{
 			powerup = 3;
 			map[player.get_x()][player.get_y()] = 0;
-		}  
-		
-			
-		
-	}
-	
-		
-	
+		}  	
+	}		
 }
 
+
+//function that moves the goose
 void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
 {
 	int yMove = 0, xMove = 0;
@@ -224,11 +192,12 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
           yMove = -1;
     }
     
+    //used to re-print the gameboard if the goose flys over a wall
     if (map[goose.get_x()][goose.get_y()] != 0)
     {
-    	goose.update_location(xMove, yMove);//moves goose
-		printBoard(map);//re prints board where to cover where goose overlapped
-   		goose.update_location(0,0);//reprints goose incase hes still on the wall and got written over
+    	goose.update_location(xMove, yMove);
+		printBoard(map);
+   		goose.update_location(0,0);
 	}
 	else
 	{
@@ -236,6 +205,8 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
 	}
   
 }
+
+//starter is the object used in the level selection stage, same as movePlayer
 void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected)
 {
 	int yMove = 0, xMove = 0;
@@ -255,18 +226,18 @@ void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_se
 		level_selected = map[starter.get_x()][starter.get_y()];
 }
 
+//places specified powerups onto the map
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 {
-	int x_power = 0;
-	int y_power = 0;
-	bool placed = false;
 	for(int count = 0; count < num; count++)
 	{
-		placed = false;
+		int x_power = rand() % 80;
+		int y_power = rand() % 21;
+		
+		bool placed = false;
+		
 		while(!placed)
 		{
-			x_power = rand() % 80;
-			y_power = rand() % 21;
 			if(map[x_power][y_power] == 0)
 			{
 				map[x_power][y_power] = type + 5;// + 5 because it should be 6 char for the first powerup
@@ -275,8 +246,12 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 		}	
 		
 	}
+	
+	map[40][1] = 6;
+	map[43][1] = 7;
 }
 
+//checks if the key entered is valid
 bool validKeyPress(int key)
 {
 	int validKeys[6] = {TK_UP, TK_RIGHT, TK_LEFT, TK_DOWN, TK_ESCAPE, TK_CLOSE};
@@ -287,6 +262,7 @@ bool validKeyPress(int key)
 	}
 	return false;
 }
+
 
 int findClosestTile(int player_location, int win_location, int win_size)
 {
@@ -303,46 +279,34 @@ int findClosestTile(int player_location, int win_location, int win_size)
 	return closestTile;
 }
 
-void randomPath(int & position, int position2, int & distance, int map[MAP_X][MAP_Y], bool x)
+
+bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win)
 {
-	int path_length = 0;
-	if (distance > 0)
-	{	
-		path_length = rand() % distance + 1;	
-		for(int pos = 0; pos < path_length; pos++)
-		{
-			if (x)
-				map[position + pos][position2] = EMPTY;
-			else
-				map[position2][position + pos] = EMPTY;
-		}
-		position += path_length;
-		distance -= path_length;
+	int count = 0;
+	int closestWinX = findClosestTile(player.get_x(), win_x, win_length);
+	int closestWinY = findClosestTile(player.get_y(), win_y, win_width);
+	int yMove = 0, xMove = 0;
+    if (abs(player.get_x() - closestWinX) > abs(player.get_y() - closestWinY) && map[player.get_x() + 1][player.get_y()] != WALL && map[player.get_x() - 1][player.get_y()] != WALL)
+    {
+    	if (player.get_x() < closestWinX)
+      		xMove = 1;
+		else 
+      		xMove = -1;
 	}
-	else if (distance < 0)
-	{	
-		path_length = rand() % abs(distance) + 1;	
-		for(int pos = 0; pos < path_length; pos++)
-		{
-			if (x)
-				map[position - pos][position2] = EMPTY;
-			else
-				map[position2][position - pos] = EMPTY;
-		}
-		position -= path_length;
-		distance += path_length;
-	}
+    else
+    {
+      	if (player.get_y() < closestWinY && map[player.get_x()][player.get_y()+1] != WALL)
+        	yMove = 1;
+    	else if (map[player.get_x()][player.get_y()-1] != WALL)
+        	yMove = -1;
+    }
+    	if (player.can_move(xMove, yMove) &&
+		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
+			player.update_virtual_location(xMove, yMove);
+			
+		if (map[player.get_x()][player.get_y()] == 2)//win square num
+		win = 1;
 }
 
-void generateWinPath(Actor & player, int distance_x, int distance_y, int map[MAP_X][MAP_Y])
-{
-	int player_x = player.get_x(), player_y = player.get_y();
-	
-	while(map[player_x-1][player_y-1] != WINNER and map[player_x+1][player_y-1] != WINNER and map[player_x-1][player_y+1] != WINNER and map[player_x+1][player_y+1] != WINNER)
-	{
-		randomPath(player_x, player_y, distance_x, map, true);
-		randomPath(player_y, player_x, distance_y, map, false);
-		if (distance_x == 0 and distance_y == 0)
-			return;
-	}
-}
+
+
