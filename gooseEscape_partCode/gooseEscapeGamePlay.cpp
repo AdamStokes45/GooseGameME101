@@ -25,17 +25,17 @@ void printBoard(int map[MAP_X][MAP_Y])
       			terminal_put(col, row, WALL_CHAR);
             else if (map[col][row] == 2)
               terminal_put(col, row, WIN_CHAR);
-            else if (map[col][row] == 3)
+            else if (map[col][row] == EASY)
               terminal_put(col, row, EASY_CHAR);	
-            else if (map[col][row] == 4)
+            else if (map[col][row] == MEDIUM)
               terminal_put(col, row, MEDIUM_CHAR);
-            else if (map[col][row] == 5)
+            else if (map[col][row] == HARD)
               terminal_put(col, row, HARD_CHAR);
-            else if (map[col][row] == 6)
+            else if (map[col][row] == P_1)
               terminal_put(col, row, POWER_1);
-            else if (map[col][row] == 7)
+            else if (map[col][row] == P_2)
               terminal_put(col, row, POWER_2);
-            else if (map[col][row] == 8)
+            else if (map[col][row] == P_3)
               terminal_put(col, row, POWER_3);
     	}
   	}
@@ -148,23 +148,23 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 	
 	if(map[player.get_x()][player.get_y()] > 0)//only runs if hits a powerup or win square
 	{
-		if (map[player.get_x()][player.get_y()] == 2)//win square num
+		if (map[player.get_x()][player.get_y()] == WINNER)//win square num
 			win = 1;
 			
-		if (map[player.get_x()][player.get_y()] == 6)//first powerup square num
+		if (map[player.get_x()][player.get_y()] == P_1)//first powerup square num
 		{
 			powerup = 1;
 			uses = 5;//clicks the powerup is good for
 			map[player.get_x()][player.get_y()] = 0;//resets the tile so doesnt reprint when map is re-printed
 		}
 		
-		if (map[player.get_x()][player.get_y()] == 7)//second powerup square num
+		if (map[player.get_x()][player.get_y()] == P_2)//second powerup square num
 		{
 			powerup = 2;
 			map[player.get_x()][player.get_y()] = 0;
 		}    
 		 
-		if (map[player.get_x()][player.get_y()] == 8)//second powerup square num
+		if (map[player.get_x()][player.get_y()] == P_3)//second powerup square num
 		{
 			powerup = 3;
 			map[player.get_x()][player.get_y()] = 0;
