@@ -23,20 +23,28 @@ void printBoard(int map[MAP_X][MAP_Y])
     	{
       		if (map[col][row] == 1)
       			terminal_put(col, row, WALL_CHAR);
+      			
             else if (map[col][row] == 2)
               terminal_put(col, row, WIN_CHAR);
+              
             else if (map[col][row] == EASY)
               terminal_put(col, row, EASY_CHAR);	
+              
             else if (map[col][row] == MEDIUM)
               terminal_put(col, row, MEDIUM_CHAR);
+              
             else if (map[col][row] == HARD)
               terminal_put(col, row, HARD_CHAR);
+              
             else if (map[col][row] == POWER_1)
               terminal_put(col, row, POWER_1_CHAR);
+              
             else if (map[col][row] == POWER_2)
               terminal_put(col, row, POWER_2_CHAR);
+              
             else if (map[col][row] == POWER_3)
               terminal_put(col, row, POWER_3_CHAR);
+              
     	}
   	}
 	// after putting items on the game board, refresh the terminal to see the items
