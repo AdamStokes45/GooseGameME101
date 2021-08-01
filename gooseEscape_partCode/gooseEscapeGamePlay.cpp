@@ -10,19 +10,11 @@ using namespace std;
 #include "gooseEscapeConsole.hpp"
 #include "gooseEscapeGamePlay.hpp"
 
-/*
-    This file is all about the game world.  You will modify this to add
-    functionality to your game, first to get it working, and later to make
-    it fun.
-    
-    If you add or modify functions, be sure to update the prototypes in the
-    gooseEscapeGamePlay.hpp file
-*/
-
+//required
 extern Console out;
 
 
-
+//function that will print the game board with specified values for characters
 void printBoard(int map[MAP_X][MAP_Y])
 {
 	for (int col = 0; col < MAP_X; col++)
@@ -51,6 +43,7 @@ void printBoard(int map[MAP_X][MAP_Y])
 	terminal_refresh();
 }
 
+//places winning squares down onto board
 void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE])
 {
 	int spawn_x = rand() % (MAP_X - length);
@@ -111,15 +104,6 @@ void generateRandomWall(int amount_lower, int amount_range, int width_lower, int
 
 	}
 }
-/*
-    Do something when the goose captures the player
-
-    At the moment the function just checks to see if the player and the goose
-    are in the same location.  If you want to attack or do something else, this
-    function would need to change.  For example, maybe the two touch each other
-    and then fight.  You could use the health that is given in the Actor class,
-    and update it.  Fight, run, use weapons, it is up to you!
-*/
 
 bool captured(Actor const & player, Actor const & monster)
 {
@@ -127,18 +111,8 @@ bool captured(Actor const & player, Actor const & monster)
          && player.get_y() == monster.get_y());
 }
 
-/*
-    Move the player to a new location based on the user input
-    
-    All key presses start with "TK_" then the character.  So "TK_A" is the A
-    key that was pressed.  At the moment, only the arrow keys are used,
-    but feel free to add more keys that allow the player to do something else
-    like pick up a power up.
-    
-    A look-up table might be useful.
 
-    Going further: You could decide to learn about switch statements
-*/
+//function that moves player, while checking for powerup
 void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int & powerup, int & uses)
 {
     int yMove = 0, xMove = 0;
@@ -194,16 +168,12 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 		{
 			powerup = 3;
 			map[player.get_x()][player.get_y()] = 0;
-		}  
-		
-			
-		
-	}
-	
-		
-	
+		}  	
+	}		
 }
 
+
+//function that moves the goose
 void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
 {
 	int yMove = 0, xMove = 0;
@@ -222,11 +192,12 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
           yMove = -1;
     }
     
+    //used to re-print the gameboard if the goose flys over a wall
     if (map[goose.get_x()][goose.get_y()] != 0)
     {
-    	goose.update_location(xMove, yMove);//moves goose
-		printBoard(map);//re prints board where to cover where goose overlapped
-   		goose.update_location(0,0);//reprints goose incase hes still on the wall and got written over
+    	goose.update_location(xMove, yMove);
+		printBoard(map);
+   		goose.update_location(0,0);
 	}
 	else
 	{
@@ -234,6 +205,8 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
 	}
   
 }
+
+//starter is the object used in the level selection stage, same as movePlayer
 void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected)
 {
 	int yMove = 0, xMove = 0;
@@ -253,6 +226,7 @@ void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_se
 		level_selected = map[starter.get_x()][starter.get_y()];
 }
 
+//places specified powerups onto the map
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 {
 	for(int count = 0; count < num; count++)
@@ -277,6 +251,7 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 	map[43][1] = 7;
 }
 
+//checks if the key entered is valid
 bool validKeyPress(int key)
 {
 	int validKeys[6] = {TK_UP, TK_RIGHT, TK_LEFT, TK_DOWN, TK_ESCAPE, TK_CLOSE};
@@ -287,6 +262,7 @@ bool validKeyPress(int key)
 	}
 	return false;
 }
+
 
 int findClosestTile(int player_location, int win_location, int win_size)
 {
@@ -302,6 +278,7 @@ int findClosestTile(int player_location, int win_location, int win_size)
 	}
 	return closestTile;
 }
+
 
 bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win)
 {

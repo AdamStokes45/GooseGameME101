@@ -27,9 +27,9 @@ int main()
 	int level_selected = 0;
 	int goose_spawn_x = 0, goose_spawn_y = 0, player_spawn_x = -1, player_spawn_y = -1;
 	int win_info[INFO_SIZE] = {0};
-	bool win = 0;
-	int powerup = 0;
-	int uses = 0;
+	bool win = 0;//used to check if player has touched win block
+	int powerup = 0;//used to indicate active powerup
+	int uses = 0;//used to indicate how many uses are avalible for active powerup
 	int keyEntered = TK_A;
 	
 	int map[MAP_X][MAP_Y] = {0};
@@ -117,7 +117,7 @@ int main()
   	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
 
   
-	// make the goose
+	//make the goose
 	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);
     
 	// Printing the game instructions in the console window
@@ -176,20 +176,16 @@ int main()
 				}
             	powerup = 0;
 			}
-    	    
-    	    
 			
-    	    
-	    	
-	    	
     	    if (!captured(player,monster) and !win) 
     	    {
-    	    	//moveGoose(player, monster, map); //moves the goose towards the player
+    	    	moveGoose(player, monster, map); //moves the goose towards the player
 			}
     	    
     	    
   		}
 	}
+	
     if (keyEntered != TK_CLOSE)
     {
       	//once we're out of the loop, the game is over
