@@ -32,19 +32,21 @@ void printBoard(int map[MAP_X][MAP_Y])
       		if (map[col][row] == 1)
       			terminal_put(col, row, WALL_CHAR);
             else if (map[col][row] == 2)
-              terminal_put(col, row, WIN_CHAR);
+              	terminal_put(col, row, WIN_CHAR);
             else if (map[col][row] == 3)
-              terminal_put(col, row, EASY_CHAR);	
+              	terminal_put(col, row, EASY_CHAR);	
             else if (map[col][row] == 4)
-              terminal_put(col, row, MEDIUM_CHAR);
+              	terminal_put(col, row, MEDIUM_CHAR);
             else if (map[col][row] == 5)
-              terminal_put(col, row, HARD_CHAR);
+              	terminal_put(col, row, HARD_CHAR);
             else if (map[col][row] == 6)
-              terminal_put(col, row, POWER_1);
+             	 terminal_put(col, row, POWER_1);
             else if (map[col][row] == 7)
-              terminal_put(col, row, POWER_2);
+              	terminal_put(col, row, POWER_2);
             else if (map[col][row] == 8)
-              terminal_put(col, row, POWER_3);
+              	terminal_put(col, row, POWER_3);
+            else if (map[col][row] == 9)
+            	terminal_put(col, row, WIN_PATH_CHAR);
     	}
   	}
 	// after putting items on the game board, refresh the terminal to see the items
@@ -303,33 +305,46 @@ int findClosestTile(int player_location, int win_location, int win_size)
 	return closestTile;
 }
 
-bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win)
+void randomPath(int & position, int position2, int & distance, int map[MAP_X][MAP_Y], bool x)
 {
-	int count = 0;
-	int closestWinX = findClosestTile(player.get_x(), win_x, win_length);
-	int closestWinY = findClosestTile(player.get_y(), win_y, win_width);
-	int yMove = 0, xMove = 0;
-    if (abs(player.get_x() - closestWinX) > abs(player.get_y() - closestWinY) && map[player.get_x() + 1][player.get_y()] != WALL && map[player.get_x() - 1][player.get_y()] != WALL)
-    {
-    	if (player.get_x() < closestWinX)
-      		xMove = 1;
-		else 
-      		xMove = -1;
+	int path_length = 0;
+	if (distance > 0)
+	{	
+		path_length = rand() % distance + 1;	
+		for(int pos = 0; pos <= path_length; pos++)
+		{
+			if (x)
+				map[position + pos][position2] = WIN_PATH;
+			else
+				map[position2][position + pos] = WIN_PATH;
+		}
+		position += path_length;
+		distance -= path_length;
 	}
-    else
-    {
-      	if (player.get_y() < closestWinY && map[player.get_x()][player.get_y()+1] != WALL)
-        	yMove = 1;
-    	else if (map[player.get_x()][player.get_y()-1] != WALL)
-        	yMove = -1;
-    }
-    	if (player.can_move(xMove, yMove) &&
-		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
-			player.update_virtual_location(xMove, yMove);
-			
-		if (map[player.get_x()][player.get_y()] == 2)//win square num
-		win = 1;
+	else if (distance < 0)
+	{	
+		path_length = rand() % abs(distance) + 1;	
+		for(int pos = 0; pos < path_length; pos++)
+		{
+			if (x)
+				map[position - pos][position2] = WIN_PATH;
+			else
+				map[position2][position - pos] = WIN_PATH;
+		}
+		position -= path_length;
+		distance += path_length;
+	}
 }
 
-
-
+void generateWinPath(Actor & player, int distance_x, int distance_y, int map[MAP_X][MAP_Y])
+{
+	int player_x = player.get_x(), player_y = player.get_y();
+	
+	while(map[player_x-1][player_y-1] != WINNER and map[player_x+1][player_y-1] != WINNER and map[player_x-1][player_y+1] != WINNER and map[player_x+1][player_y+1] != WINNER)
+	{
+		randomPath(player_x, player_y, distance_x, map, true);
+		randomPath(player_y, player_x, distance_y, map, false);
+		if (distance_x == 0 and distance_y == 0)
+			return;
+	}
+}

@@ -25,6 +25,7 @@ const int WINNER = 2;
 const int EASY = 3;
 const int MEDIUM = 4;
 const int HARD = 5;
+const int WIN_PATH = 9;
 
 const int MAP_X = 80;
 const int MAP_Y = 21;
@@ -48,6 +49,7 @@ const int HARD_CHAR = int('H');
 const int POWER_1 = int('1');
 const int POWER_2 = int('2');
 const int POWER_3 = int('3');
+const int WIN_PATH_CHAR = int('W');
 
 /*
 Colours have the format "brightness hue" or "hue", e.g. "white" "light green"
@@ -99,7 +101,9 @@ void generateRandomWall(int amount_lower, int amount_range, int width_lower, int
 
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y]);
 
-bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win);
+int findClosestTile(int player_location, int win_location, int win_size);
+
+void generateWinPath(Actor & player, int distance_x, int distance_y, int map[MAP_X][MAP_Y]);
 
 bool validKeyPress(int key);
 
