@@ -18,17 +18,6 @@ const int POWER_1 = 6;
 const int POWER_2 = 7;
 const int POWER_3 = 8;
 
-const int MAP_X = 80;
-const int MAP_Y = 21;
-const int LEVEL_SELECT_SIZE = 3;
-const int WIN_INFO_SIZE = 4;
-
-//Difficulty selection zones coordinates
-const int EASY_ZONE_X = 27;
-const int MEDIUM_ZONE_X = 39;
-const int HARD_ZONE_X = 51;
-const int DIFFICULTY_ZONE_Y = 9;
-
 //display characters
 const int PLAYER_CHAR = int('@');
 const int MONSTER_CHAR = int('G');
@@ -41,10 +30,74 @@ const int POWER_1_CHAR = int('1');
 const int POWER_2_CHAR = int('2');
 const int POWER_3_CHAR = int('3');
 
+//map constants
+const int MAP_X = 80;
+const int MAP_Y = 21;
+const int LEVEL_SELECT_SIZE = 3;
 
+//Difficulty selection zones coordinates
+const int EASY_ZONE_X = 27;
+const int MEDIUM_ZONE_X = 39;
+const int HARD_ZONE_X = 51;
+const int DIFFICULTY_ZONE_Y = 9;
+
+//Easy Difficulty Constants
+const int E_WALL_AMOUNT_LOWER = 1; //Wall constants
+const int E_WALL_AMOUNT_RANGE = 3;
+const int E_WALL_WIDTH_LOWER = 1;
+const int E_WALL_WIDTH_RANGE = 1;
+const int E_WALL_LENGTH_LOWER = 3;
+const int E_WALL_LENGTH_RANGE = 8;
+const int E_WIN_WIDTH_LOWER = 2; //Win zone constants
+const int E_WIN_WIDTH_RANGE = 3;
+const int E_WIN_LENGTH_LOWER = 2;
+const int E_WIN_LENGTH_RANGE = 3;
+const int E_POW1_NUM = 10; //Powerup constants
+const int E_POW2_NUM = 5;
+
+
+//Medium Difficulty Constants
+const int M_WALL_AMOUNT_LOWER = 3; //Wall constants
+const int M_WALL_AMOUNT_RANGE = 8;
+const int M_WALL_WIDTH_LOWER = 1;
+const int M_WALL_WIDTH_RANGE = 1;
+const int M_WALL_LENGTH_LOWER = 5;
+const int M_WALL_LENGTH_RANGE = 12;
+const int M_WIN_WIDTH_LOWER = 2; //Win zone constants
+const int M_WIN_WIDTH_RANGE = 2;
+const int M_WIN_LENGTH_LOWER = 2;
+const int M_WIN_LENGTH_RANGE = 2;
+const int M_POW1_NUM = 5; //Powerup constants
+const int M_POW2_NUM = 2;
+const int M_POW3_NUM = 2;
+
+//Hard Difficulty Constants
+const int H_WALL_AMOUNT_LOWER = 10; //Wall constants
+const int H_WALL_AMOUNT_RANGE = 11;
+const int H_WALL_WIDTH_LOWER = 2;
+const int H_WALL_WIDTH_RANGE = 3;
+const int H_WALL_LENGTH_LOWER = 10;
+const int H_WALL_LENGTH_RANGE = 11;
+const int H_WIN_WIDTH_LOWER = 1; //Win zone constants
+const int H_WIN_WIDTH_RANGE = 1;
+const int H_WIN_LENGTH_LOWER = 1;
+const int H_WIN_LENGTH_RANGE = 1;
+const int H_POW1_NUM = 2; //Powerup constants
+
+//win info constants
+const int WIN_INFO_SIZE = 4;
+const int WIN_X_INDEX = 0;
+const int WIN_Y_INDEX = 1;
+const int WIN_LEN_INDEX = 2;
+const int WIN_WIDTH_INDEX = 3;
+
+//actor constants
 const char PLAYER_COLOUR[] = "light sky";
 const char GOOSE_COLOUR[] = "yellow";
 
+//other constants
+const int POW1_USES = 5;
+const int VALID_KEY_AMOUNT = 6;
 
 bool captured(Actor const & player, Actor const & monster);
 

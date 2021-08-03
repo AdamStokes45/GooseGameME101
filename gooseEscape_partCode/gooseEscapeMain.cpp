@@ -106,40 +106,51 @@ int main()
   	
 	if (level_selected == EASY) // easy map generation
   	{
-  		generateRandomWall(1, 3, 1, 1, 3, 8, map);
-  		generateRandomWin(2, 3, 2, 3, map, win_info);
+  		generateRandomWall(E_WALL_AMOUNT_LOWER, E_WALL_AMOUNT_RANGE, 
+		  				   E_WALL_WIDTH_LOWER, E_WALL_WIDTH_RANGE, 
+						   E_WALL_LENGTH_LOWER, E_WALL_LENGTH_RANGE, map);
+  		generateRandomWin(E_WIN_WIDTH_LOWER, E_WIN_WIDTH_RANGE, 
+		  				  E_WIN_LENGTH_LOWER, E_WIN_LENGTH_RANGE, map, win_info);
   		
-  		powerupGen(1,10,map);
-  		powerupGen(2,5,map);
+  		powerupGen(POWER_1, E_POW1_NUM, map);
+  		powerupGen(POWER_2, E_POW2_NUM, map);
   	}
 	else if (level_selected == MEDIUM) // medium map generation
   	{
-  		generateRandomWall(3, 8, 1, 1, 5, 12, map);
-  		generateRandomWin(2, 2, 2, 2, map, win_info);
+		generateRandomWall(M_WALL_AMOUNT_LOWER, M_WALL_AMOUNT_RANGE, 
+		  				   M_WALL_WIDTH_LOWER, M_WALL_WIDTH_RANGE, 
+						   M_WALL_LENGTH_LOWER, M_WALL_LENGTH_RANGE, map);
+  		generateRandomWin(M_WIN_WIDTH_LOWER, M_WIN_WIDTH_RANGE, 
+		  				  M_WIN_LENGTH_LOWER, M_WIN_LENGTH_RANGE, map, win_info);
   		
-  		powerupGen(1,5,map);
-  		powerupGen(2,2,map);
-  		powerupGen(3,2,map);
+  		powerupGen(POWER_1, M_POW1_NUM, map);
+  		powerupGen(POWER_2, M_POW2_NUM, map);
+  		powerupGen(POWER_3, M_POW3_NUM, map);
     }
   
   	else // hard map generation
   	{
-  		generateRandomWall(10, 11, 2, 3, 10, 11, map);
-  		generateRandomWin(1, 1, 1, 1, map, win_info);
+		generateRandomWall(H_WALL_AMOUNT_LOWER, H_WALL_AMOUNT_RANGE, 
+		  				   H_WALL_WIDTH_LOWER, H_WALL_WIDTH_RANGE, 
+						   H_WALL_LENGTH_LOWER, H_WALL_LENGTH_RANGE, map);
+  		generateRandomWin(H_WIN_WIDTH_LOWER, H_WIN_WIDTH_RANGE, 
+		  				  H_WIN_LENGTH_LOWER, H_WIN_LENGTH_RANGE, map, win_info);
 
-  		powerupGen(1,2,map);
+  		powerupGen(POWER_1, H_POW1_NUM, map);
   	}
   	
   	//randomizes player spawn point and makes sure to spawn in a clear area
   	do
   	{
-  		player_spawn_x = rand() % 80;
-  		player_spawn_y = rand() % 21;
-  		player_distance_to_win_x = findClosestTile(player_spawn_x, win_info[0], win_info[2]) - player_spawn_x;
-		player_distance_to_win_y = findClosestTile(player_spawn_y, win_info[1], win_info[3]) - player_spawn_y;
+  		player_spawn_x = rand() % MAP_X;
+  		player_spawn_y = rand() % MAP_Y;
+  		player_distance_to_win_x = findClosestTile(player_spawn_x, win_info[WIN_X_INDEX], 
+		  										   win_info[WIN_LEN_INDEX]) - player_spawn_x;
+		player_distance_to_win_y = findClosestTile(player_spawn_y, win_info[WIN_Y_INDEX], 
+												   win_info[WIN_WIDTH_INDEX]) - player_spawn_y;
 		p_moves_to_win = abs(player_distance_to_win_x) + abs(player_distance_to_win_y);
 	} while(map[player_spawn_x][player_spawn_y] != 0 || 
-			p_moves_to_win< level_selected*10);
+			p_moves_to_win < level_selected * 10);
 	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
 	
 	generateWinPath(player, player_distance_to_win_x, player_distance_to_win_y, map);
@@ -147,10 +158,12 @@ int main()
   	//randomizes goose spawn point and makes sure player can win
   	do
   	{
-  		goose_spawn_x = rand() % 80;
-  		goose_spawn_y = rand() % 21;
-  		goose_distance_to_win_x = findClosestTile(goose_spawn_x, win_info[0], win_info[2]) - goose_spawn_x;
-		goose_distance_to_win_y = findClosestTile(goose_spawn_y, win_info[1], win_info[3]) - goose_spawn_y;
+  		goose_spawn_x = rand() % MAP_X;
+  		goose_spawn_y = rand() % MAP_Y;
+  		goose_distance_to_win_x = findClosestTile(goose_spawn_x, win_info[WIN_X_INDEX], 
+		  										  win_info[WIN_LEN_INDEX]) - goose_spawn_x;
+		goose_distance_to_win_y = findClosestTile(goose_spawn_y, win_info[WIN_Y_INDEX], 
+												  win_info[WIN_WIDTH_INDEX]) - goose_spawn_y;
 		g_moves_to_win = abs(goose_distance_to_win_x) + abs(goose_distance_to_win_y);
 	} while(map[player_spawn_x][player_spawn_y] == 2 ||
 			p_moves_to_win >= g_moves_to_win ||
@@ -177,27 +190,24 @@ int main()
 	    // get player key press
 	    keyEntered = terminal_read();
 
-		//valid key press checks that the player is hitting one of the arrow keys or the escape or close key
-		//otherwise if the player was hitting arbitrary keys the player would miss their turn and the goose would move
+		/* valid key press checks that the player is hitting one of the arrow keys 
+		or the escape or close keyotherwise if the player was hitting arbitrary keys 
+		the player would miss their turn and the goose would move*/
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && validKeyPress(keyEntered))
         {
         	//if no powerups are active, or powerup 3 is active (move through wall)
-            if(powerup == 0  || powerup == 3)
-            {
+            if(powerup == 0  || powerup == POWER_3)
             	movePlayer(keyEntered, player, map, win, powerup, uses);
-			}
             	
-            //Powerup 1 - moves double squares for 5 turns
-            else if(powerup == 1 && uses > 0)
+            //Powerup 1 -> moves double squares for 5 turns
+            else if(powerup == POWER_1 && uses > 0)
             {
             	for(int moves = 0; moves < 2; moves++)
 				{
 					movePlayer(keyEntered, player, map, win, powerup, uses);
-					powerup = 1;
-					if(win)
-					{
+					powerup = POWER_1;
+					if(win)//If you reach the win location you stop
 						moves = 2;
-					}
 				}
             	uses --;
             	
@@ -205,24 +215,21 @@ int main()
 					powerup = 0;
 			}
 			
-			//Powerup 2 - moves 10 squares for 1 turn
-			else if(powerup == 2)//jumping 10 squares
+			//Powerup 2 -> moves 10 squares for 1 turn
+			else if(powerup == POWER_2)
 			{
 				for(int moves = 0; moves < 10; moves++)
 				{
 					movePlayer(keyEntered, player, map, win, powerup, uses);
-					if(win)
-					{
+					if(win) //If you reach the win location you stop
 						moves = 10;
-					}
 				}
             	powerup = 0;
 			}
 			
+			//if the player hasn't been caught and hasn't won
     	    if (!captured(player,monster) and !win) 
-    	    {
     	    	moveGoose(player, monster, map); //moves the goose towards the player
-			}
     	    
     	    
   		}
@@ -237,10 +244,7 @@ int main()
         if (captured(player,monster))
  			out.writeLine("Goose has caught you");
 	
-        
         out.writeLine("Game has ended");
-    
-        // Output why:  did the goose get you?  Or did you win?
 	
     	// Wait until user closes the window
         while (terminal_read() != TK_CLOSE);

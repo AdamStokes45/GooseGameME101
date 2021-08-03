@@ -63,8 +63,8 @@ void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[WIN_INFO_
        		map[spawn_x + col][spawn_y + row] = WINNER;
 		}
 	}
-	win_info[0] = spawn_x;
-	win_info[1] = spawn_y;
+	win_info[WIN_X_INDEX] = spawn_x;
+	win_info[WIN_Y_INDEX] = spawn_y;
 }
 
 //generates random win location
@@ -73,8 +73,8 @@ void generateRandomWin(int width_lower, int width_range, int length_lower, int l
 
 	int width = rand() % width_range + width_lower;
     int length = rand() % length_range + length_lower;
-	win_info[2] = length;
-	win_info[3] = width;
+	win_info[WIN_LEN_INDEX] = length;
+	win_info[WIN_WIDTH_INDEX] = width;
     int orientation = rand() % 2;
 	 
     if (orientation == 0)
@@ -143,7 +143,7 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 		}
 	//case when powerup 3 (move through wall) is active, and wall is infront of player
 	else if(player.can_move(xMove, yMove) &&
-		map[player.get_x() + xMove][player.get_y() + yMove] == WALL && powerup == 3)
+		map[player.get_x() + xMove][player.get_y() + yMove] == WALL && powerup == POWER_3)
 		{
 			int wall_hop = 1;
 			while(map[player.get_x() + xMove*wall_hop][player.get_y() + yMove*wall_hop] == WALL)
@@ -165,20 +165,20 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 			
 		if (map[player.get_x()][player.get_y()] == POWER_1)//first powerup square num
 		{
-			powerup = 1;
-			uses = 5;//clicks the powerup is good for
+			powerup = POWER_1;
+			uses = POW1_USES; //turns the powerup is good for
 			map[player.get_x()][player.get_y()] = 0;//resets the tile so doesnt reprint when map is re-printed
 		}
 		
 		if (map[player.get_x()][player.get_y()] == POWER_2)//second powerup square num
 		{
-			powerup = 2;
+			powerup = POWER_2;
 			map[player.get_x()][player.get_y()] = 0;
 		}    
 		 
 		if (map[player.get_x()][player.get_y()] == POWER_3)//second powerup square num
 		{
-			powerup = 3;
+			powerup = POWER_3;
 			map[player.get_x()][player.get_y()] = 0;
 		}  	
 	}		
@@ -250,11 +250,11 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 		
 		while(!placed)
 		{
-			x_power = rand() % 80;
-			y_power = rand() % 21;
-			if(map[x_power][y_power] == 0)
+			x_power = rand() % MAP_X;
+			y_power = rand() % MAP_Y;
+			if(map[x_power][y_power] == EMPTY)
 			{
-				map[x_power][y_power] = type + 5;// + 5 because it should be 6 char for the first powerup
+				map[x_power][y_power] = type;
 				placed = true;
 			}
 		}	
@@ -265,8 +265,8 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 //checks if the key entered is valid
 bool validKeyPress(int key)
 {
-	int validKeys[6] = {TK_UP, TK_RIGHT, TK_LEFT, TK_DOWN, TK_ESCAPE, TK_CLOSE};
-	for (int i = 0; i < 6; i++)
+	int validKeys[VALID_KEY_AMOUNT] = {TK_UP, TK_RIGHT, TK_LEFT, TK_DOWN, TK_ESCAPE, TK_CLOSE};
+	for (int i = 0; i < VALID_KEY_AMOUNT; i++)
 	{
 		if (key == validKeys[i])
 			return true;
@@ -278,10 +278,10 @@ bool validKeyPress(int key)
 int findClosestTile(int player_location, int win_location, int win_size)
 {
 	int closestTile = 0;
-	int distance = 1000;
+	int distance = 1000; //distance starts as an arbitrary large number 
 	for (int tileNum = 0; tileNum < win_size; tileNum++)
 	{
-		if (abs(win_location+tileNum-player_location) < distance)
+		if (abs(win_location + tileNum-player_location) < distance)
 		{
 			distance = abs(win_location-player_location);
 			closestTile = win_location + tileNum;
