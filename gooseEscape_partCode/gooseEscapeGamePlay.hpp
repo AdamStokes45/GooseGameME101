@@ -23,6 +23,12 @@ const int MAP_Y = 21;
 const int LEVEL_SELECT_SIZE = 3;
 const int WIN_INFO_SIZE = 4;
 
+//Difficulty selection zones coordinates
+const int EASY_ZONE_X = 27;
+const int MEDIUM_ZONE_X = 39;
+const int HARD_ZONE_X = 51;
+const int DIFFICULTY_ZONE_Y = 9;
+
 //display characters
 const int PLAYER_CHAR = int('@');
 const int MONSTER_CHAR = int('G');

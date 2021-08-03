@@ -30,11 +30,21 @@ int main()
 	bool win = 0;//used to check if player has touched win block
 	int powerup = 0;//used to indicate active powerup
 	int uses = 0;//used to indicate how many uses are avalible for active powerup
-	int keyEntered = TK_A;
+	int keyEntered = TK_A; //used to see what key was pressed
+	
+	/*
+	used for randomizing spawn location
+	distance_to_win_x measures the distance from the actor (player or goose)
+	to the closest win location on the x axis
+	distance_to_win_y does the same but on the y axis
+	moves_to_win is the minimum number of moves required to reach the win location
+	(p = player, g = goose)
+	*/
 	int player_distance_to_win_x = 0, player_distance_to_win_y = 0, p_moves_to_win = 0;
 	int goose_distance_to_win_x = 0, goose_distance_to_win_y = 0, g_moves_to_win = 0;
 	
-	int map[MAP_X][MAP_Y] = {0};
+	int map[MAP_X][MAP_Y] = {0}; //creates an 80x21 map of integers
+	
 	/* 
 	win_info stores information regarding the win zone
 	win_info[0] stores the x coordinate
@@ -44,14 +54,14 @@ int main()
 	*/
 	int win_info[WIN_INFO_SIZE] = {0};
 
-	//easy medium hard map selection zones setup																															
+	//Creates the difficultly selection zones																															
 	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
   	{
   		for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
   		{
-	  		map[col+27][row+9] = EASY;
-	      	map[col+39][row+9] = MEDIUM;
-	      	map[col+51][row+9] = HARD;
+	  		map[col + EASY_ZONE_X][row + DIFFICULTY_ZONE_Y] = EASY;
+	      	map[col + MEDIUM_ZONE_X][row + DIFFICULTY_ZONE_Y] = MEDIUM;
+	      	map[col + HARD_ZONE_X][row + DIFFICULTY_ZONE_Y] = HARD;
   		}
   	}
 
@@ -59,11 +69,11 @@ int main()
 	printBoard(map);
 
 
-	//make the player
+	//makes the player
 	Actor player(PLAYER_CHAR, 40, 7, 100, PLAYER_COLOUR);
 	
 	
-	//Menu Instructions
+	//Level selection instructions
 	out.writeLine("Use the arrow keys to move the player and select a difficulty!");
 	out.writeLine("E - Easy");
 	out.writeLine("M - Medium");
@@ -81,14 +91,17 @@ int main()
 	//after selecting the level clears the selection zones from the terminal and map
 	terminal_clear_area(27, 9, 27, 3);
   	
-  	for (int col = 27; col < 54; col++)
+  	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
   	{
-  		for (int row = 9; row < 12; row++)
+  		for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
   		{
-  			map[col][row] = 0;
-		}
-	}
-  	//cout << "1";
+	  		map[col + EASY_ZONE_X][row + DIFFICULTY_ZONE_Y] = EMPTY;
+	      	map[col + MEDIUM_ZONE_X][row + DIFFICULTY_ZONE_Y] = EMPTY;
+	      	map[col + HARD_ZONE_X][row + DIFFICULTY_ZONE_Y] = EMPTY;
+  		}
+  	}
+  	
+  	
 	if (level_selected == 3) // easy map generation
   	{
   		generateRandomWall(1, 3, 1, 1, 3, 8, map);
