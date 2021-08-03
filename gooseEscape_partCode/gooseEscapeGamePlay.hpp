@@ -21,7 +21,7 @@ const int POWER_3 = 8;
 const int MAP_X = 80;
 const int MAP_Y = 21;
 const int LEVEL_SELECT_SIZE = 3;
-const int INFO_SIZE = 4;
+const int WIN_INFO_SIZE = 4;
 
 //display characters
 const int PLAYER_CHAR = int('@');
@@ -50,13 +50,15 @@ void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);
 
 void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected);
 
-void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int info[INFO_SIZE]);
+void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int info[WIN_INFO_SIZE]);
 
 void generateRandomWall(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y]);
 
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y]);
 
-bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win);
+int findClosestTile(int player_location, int win_location, int win_size);
+
+void generateWinPath(Actor & player, int distance_x, int distance_y, int map[MAP_X][MAP_Y]);
 
 bool validKeyPress(int key);
 

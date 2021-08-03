@@ -52,7 +52,7 @@ void printBoard(int map[MAP_X][MAP_Y])
 }
 
 //places winning squares down onto board
-void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE])
+void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[WIN_INFO_SIZE])
 {
 	int spawn_x = rand() % (MAP_X - length);
     int spawn_y = rand() % (MAP_Y - length);
@@ -68,7 +68,7 @@ void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE
 }
 
 //generates random win location
-void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int win_info[INFO_SIZE])
+void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int win_info[WIN_INFO_SIZE])
 {
 
 	int width = rand() % width_range + width_lower;
@@ -241,15 +241,17 @@ void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_se
 //places specified powerups onto the map
 void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 {
+	int x_power = 0;
+	int y_power = 0;
+	bool placed = false;
 	for(int count = 0; count < num; count++)
 	{
-		int x_power = rand() % 80;
-		int y_power = rand() % 21;
-		
-		bool placed = false;
+		placed = false;
 		
 		while(!placed)
 		{
+			x_power = rand() % 80;
+			y_power = rand() % 21;
 			if(map[x_power][y_power] == 0)
 			{
 				map[x_power][y_power] = type + 5;// + 5 because it should be 6 char for the first powerup
@@ -258,9 +260,6 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 		}	
 		
 	}
-	
-	map[40][1] = 6;
-	map[43][1] = 7;
 }
 
 //checks if the key entered is valid
@@ -291,34 +290,46 @@ int findClosestTile(int player_location, int win_location, int win_size)
 	return closestTile;
 }
 
-
-bool testMap(Actor & player, int map[MAP_X][MAP_Y], int win_x, int win_y, int win_length, int win_width, bool & win)
+void randomPath(int & position, int position2, int & distance, int map[MAP_X][MAP_Y], bool x)
 {
-	int count = 0;
-	int closestWinX = findClosestTile(player.get_x(), win_x, win_length);
-	int closestWinY = findClosestTile(player.get_y(), win_y, win_width);
-	int yMove = 0, xMove = 0;
-    if (abs(player.get_x() - closestWinX) > abs(player.get_y() - closestWinY) && map[player.get_x() + 1][player.get_y()] != WALL && map[player.get_x() - 1][player.get_y()] != WALL)
-    {
-    	if (player.get_x() < closestWinX)
-      		xMove = 1;
-		else 
-      		xMove = -1;
+	int path_length = 0;
+	if (distance > 0)
+	{	
+		path_length = rand() % distance + 1;	
+		for(int pos = 0; pos < path_length; pos++)
+		{
+			if (x)
+				map[position + pos][position2] = EMPTY;
+			else
+				map[position2][position + pos] = EMPTY;
+		}
+		position += path_length;
+		distance -= path_length;
 	}
-    else
-    {
-      	if (player.get_y() < closestWinY && map[player.get_x()][player.get_y()+1] != WALL)
-        	yMove = 1;
-    	else if (map[player.get_x()][player.get_y()-1] != WALL)
-        	yMove = -1;
-    }
-    	if (player.can_move(xMove, yMove) &&
-		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
-			player.update_virtual_location(xMove, yMove);
-			
-		if (map[player.get_x()][player.get_y()] == 2)//win square num
-		win = 1;
+	else if (distance < 0)
+	{	
+		path_length = rand() % abs(distance) + 1;	
+		for(int pos = 0; pos < path_length; pos++)
+		{
+			if (x)
+				map[position - pos][position2] = EMPTY;
+			else
+				map[position2][position - pos] = EMPTY;
+		}
+		position -= path_length;
+		distance += path_length;
+	}
 }
-
-
-
+	
+void generateWinPath(Actor & player, int distance_x, int distance_y, int map[MAP_X][MAP_Y])
+{
+	int player_x = player.get_x(), player_y = player.get_y();
+	
+	while(map[player_x-1][player_y-1] != WINNER and map[player_x+1][player_y-1] != WINNER and map[player_x-1][player_y+1] != WINNER and map[player_x+1][player_y+1] != WINNER)
+	{
+		randomPath(player_x, player_y, distance_x, map, true);
+		randomPath(player_y, player_x, distance_y, map, false);
+		if (distance_x == 0 and distance_y == 0)
+			return;
+	}
+}

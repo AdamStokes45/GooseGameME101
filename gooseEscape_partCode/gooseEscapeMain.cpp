@@ -24,16 +24,25 @@ int main()
   	terminal_set(SETUP_MESSAGE);
 
 	//Initialize Required variables
-	int level_selected = 0;
-	int goose_spawn_x = 0, goose_spawn_y = 0, player_spawn_x = -1, player_spawn_y = -1;
-	int win_info[INFO_SIZE] = {0};
+	int level_selected = 0; // what level is selected (Easy = 3, Medium = 4, Hard = 5)
+	int goose_spawn_x = 0, goose_spawn_y = 0; // Goose spawn coordinates
+	int player_spawn_x = 0, player_spawn_y = 0; //Player spawn coordinates
 	bool win = 0;//used to check if player has touched win block
 	int powerup = 0;//used to indicate active powerup
 	int uses = 0;//used to indicate how many uses are avalible for active powerup
 	int keyEntered = TK_A;
+	int player_distance_to_win_x = 0, player_distance_to_win_y = 0, p_moves_to_win = 0;
+	int goose_distance_to_win_x = 0, goose_distance_to_win_y = 0, g_moves_to_win = 0;
 	
 	int map[MAP_X][MAP_Y] = {0};
-
+	/* 
+	win_info stores information regarding the win zone
+	win_info[0] stores the x coordinate
+	win_info[1] stores the y coordinate
+	win_info[2] stores the length of the zone (size on x axis)
+	win_info[3] stores the width of the zone (size on y axis)
+	*/
+	int win_info[WIN_INFO_SIZE] = {0};
 
 	//easy medium hard map selection zones setup																															
 	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
@@ -107,18 +116,35 @@ int main()
   	}
   	
   	//randomizes player spawn point and makes sure to spawn in a clear area
-  	while(player_spawn_x <= 0 && player_spawn_y <= 0 || map[player_spawn_x][player_spawn_y] != 0)
+  	do
   	{
   		player_spawn_x = rand() % 80;
   		player_spawn_y = rand() % 21;
-	}
+  		player_distance_to_win_x = findClosestTile(player_spawn_x, win_info[0], win_info[2]) - player_spawn_x;
+		player_distance_to_win_y = findClosestTile(player_spawn_y, win_info[1], win_info[3]) - player_spawn_y;
+		p_moves_to_win = abs(player_distance_to_win_x) + abs(player_distance_to_win_y);
+	} while(map[player_spawn_x][player_spawn_y] != 0 || 
+			p_moves_to_win< level_selected*10);
+	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
 	
-  	printBoard(map);
-  	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
-
-  
+	generateWinPath(player, player_distance_to_win_x, player_distance_to_win_y, map);
+	
+  	//randomizes goose spawn point and makes sure player can win
+  	do
+  	{
+  		goose_spawn_x = rand() % 80;
+  		goose_spawn_y = rand() % 21;
+  		goose_distance_to_win_x = findClosestTile(goose_spawn_x, win_info[0], win_info[2]) - goose_spawn_x;
+		goose_distance_to_win_y = findClosestTile(goose_spawn_y, win_info[1], win_info[3]) - goose_spawn_y;
+		g_moves_to_win = abs(goose_distance_to_win_x) + abs(goose_distance_to_win_y);
+	} while(map[player_spawn_x][player_spawn_y] == 2 ||
+			p_moves_to_win >= g_moves_to_win ||
+			g_moves_to_win - p_moves_to_win < (6-level_selected)*4);
+  	
 	//make the goose
 	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);
+    
+    printBoard(map);
     
 	// Printing the game instructions in the console window
     out.writeLine("Escape the Goose! " + monster.get_location_string());
@@ -135,8 +161,7 @@ int main()
 	{
 	    // get player key press
 	    keyEntered = terminal_read();
-		if (keyEntered == TK_SPACE)
-      		testMap(player, map, win_info[0], win_info[1], win_info[2], win_info[3], win);
+
 		//valid key press checks that the player is hitting one of the arrow keys or the escape or close key
 		//otherwise if the player was hitting arbitrary keys the player would miss their turn and the goose would move
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && validKeyPress(keyEntered))
