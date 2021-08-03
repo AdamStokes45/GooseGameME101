@@ -89,7 +89,9 @@ int main()
 	}
 	
 	//after selecting the level clears the selection zones from the terminal and map
-	terminal_clear_area(27, 9, 27, 3);
+	terminal_clear_area(EASY_ZONE_X, DIFFICULTY_ZONE_Y, LEVEL_SELECT_SIZE, LEVEL_SELECT_SIZE);
+	terminal_clear_area(MEDIUM_ZONE_X, DIFFICULTY_ZONE_Y, LEVEL_SELECT_SIZE, LEVEL_SELECT_SIZE);
+	terminal_clear_area(HARD_ZONE_X, DIFFICULTY_ZONE_Y, LEVEL_SELECT_SIZE, LEVEL_SELECT_SIZE);
   	
   	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
   	{
@@ -102,7 +104,7 @@ int main()
   	}
   	
   	
-	if (level_selected == 3) // easy map generation
+	if (level_selected == EASY) // easy map generation
   	{
   		generateRandomWall(1, 3, 1, 1, 3, 8, map);
   		generateRandomWin(2, 3, 2, 3, map, win_info);
@@ -110,7 +112,7 @@ int main()
   		powerupGen(1,10,map);
   		powerupGen(2,5,map);
   	}
-	else if (level_selected == 4) // medium map generation
+	else if (level_selected == MEDIUM) // medium map generation
   	{
   		generateRandomWall(3, 8, 1, 1, 5, 12, map);
   		generateRandomWin(2, 2, 2, 2, map, win_info);
