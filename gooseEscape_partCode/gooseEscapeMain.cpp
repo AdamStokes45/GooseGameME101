@@ -26,6 +26,7 @@ int main()
 	//Initialize Required variables
 	int level_selected = 0; // what level is selected (Easy = 3, Medium = 4, Hard = 5)
 	int goose_spawn_x = 0, goose_spawn_y = 0; // Goose spawn coordinates
+	int goose2_spawn_x = 0, goose2_spawn_y = 0; // Goose2 spawn coordinates
 	int player_spawn_x = 0, player_spawn_y = 0; //Player spawn coordinates
 	bool win = 0;//used to check if player has touched win block
 	int powerup = 0;//used to indicate active powerup
@@ -34,16 +35,15 @@ int main()
 	
 	/*
 	used for randomizing spawn location
-	distance_to_win_x measures the distance from the actor (player or goose)
+	distance_to_win_x measures the distance from the actor 
 	to the closest win location on the x axis
 	distance_to_win_y does the same but on the y axis
 	moves_to_win is the minimum number of moves required to reach the win location
-	(p = player, g = goose)
+	(p = player)
 	*/
 	int player_distance_to_win_x = 0, player_distance_to_win_y = 0, p_moves_to_win = 0;
-	int goose_distance_to_win_x = 0, goose_distance_to_win_y = 0, g_moves_to_win = 0;
 	
-	int map[MAP_X][MAP_Y] = {0}; //creates an 80x21 map of integers
+	int map[ROW_SIZE][COL_SIZE] = {0}; //creates an 80x21 map of integers
 	
 	/* 
 	win_info stores information regarding the win zone
@@ -53,15 +53,15 @@ int main()
 	win_info[3] stores the width of the zone (size on y axis)
 	*/
 	int win_info[WIN_INFO_SIZE] = {0};
-
+	
 	//Creates the difficultly selection zones																															
-	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
+	for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
   	{
-  		for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
+  		for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
   		{
-	  		map[col + EASY_ZONE_X][row + DIFFICULTY_ZONE_Y] = EASY;
-	      	map[col + MEDIUM_ZONE_X][row + DIFFICULTY_ZONE_Y] = MEDIUM;
-	      	map[col + HARD_ZONE_X][row + DIFFICULTY_ZONE_Y] = HARD;
+	  		map[row + DIFFICULTY_ZONE_Y][col + EASY_ZONE_X] = EASY;
+	      	map[row + DIFFICULTY_ZONE_Y][col + MEDIUM_ZONE_X] = MEDIUM;
+	      	map[row + DIFFICULTY_ZONE_Y][col + HARD_ZONE_X] = HARD;
   		}
   	}
 
@@ -78,7 +78,7 @@ int main()
 	out.writeLine("E - Easy");
 	out.writeLine("M - Medium");
 	out.writeLine("H - Hard");
-	
+
 	//movement required to select level
  	while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE && level_selected == 0)
 	{
@@ -87,19 +87,19 @@ int main()
         if (keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE)
     	    moveStarter(keyEntered, player, map, level_selected);	  
 	}
-	
+
 	//after selecting the level clears the selection zones from the terminal and map
 	terminal_clear_area(EASY_ZONE_X, DIFFICULTY_ZONE_Y, LEVEL_SELECT_SIZE, LEVEL_SELECT_SIZE);
 	terminal_clear_area(MEDIUM_ZONE_X, DIFFICULTY_ZONE_Y, LEVEL_SELECT_SIZE, LEVEL_SELECT_SIZE);
 	terminal_clear_area(HARD_ZONE_X, DIFFICULTY_ZONE_Y, LEVEL_SELECT_SIZE, LEVEL_SELECT_SIZE);
   	
-  	for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
+  	for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
   	{
-  		for (int row = 0; row < LEVEL_SELECT_SIZE; row++)
+  		for (int col = 0; col < LEVEL_SELECT_SIZE; col++)
   		{
-	  		map[col + EASY_ZONE_X][row + DIFFICULTY_ZONE_Y] = EMPTY;
-	      	map[col + MEDIUM_ZONE_X][row + DIFFICULTY_ZONE_Y] = EMPTY;
-	      	map[col + HARD_ZONE_X][row + DIFFICULTY_ZONE_Y] = EMPTY;
+	  		map[row + DIFFICULTY_ZONE_Y][col + EASY_ZONE_X] = EMPTY;
+	      	map[row + DIFFICULTY_ZONE_Y][col + MEDIUM_ZONE_X] = EMPTY;
+	      	map[row + DIFFICULTY_ZONE_Y][col + HARD_ZONE_X] = EMPTY;
   		}
   	}
   	
@@ -120,12 +120,14 @@ int main()
 		generateRandomWall(M_WALL_AMOUNT_LOWER, M_WALL_AMOUNT_RANGE, 
 		  				   M_WALL_WIDTH_LOWER, M_WALL_WIDTH_RANGE, 
 						   M_WALL_LENGTH_LOWER, M_WALL_LENGTH_RANGE, map);
+		
   		generateRandomWin(M_WIN_WIDTH_LOWER, M_WIN_WIDTH_RANGE, 
 		  				  M_WIN_LENGTH_LOWER, M_WIN_LENGTH_RANGE, map, win_info);
   		
   		powerupGen(POWER_1, M_POW1_NUM, map);
   		powerupGen(POWER_2, M_POW2_NUM, map);
   		powerupGen(POWER_3, M_POW3_NUM, map);
+  		
     }
   
   	else // hard map generation
@@ -138,54 +140,52 @@ int main()
 
   		powerupGen(POWER_1, H_POW1_NUM, map);
   	}
-  	
   	//randomizes player spawn point and makes sure to spawn in a clear area
   	do
   	{
-  		player_spawn_x = rand() % MAP_X;
-  		player_spawn_y = rand() % MAP_Y;
+  		player_spawn_x = rand() % COL_SIZE;
+  		player_spawn_y = rand() % ROW_SIZE;
   		player_distance_to_win_x = findClosestTile(player_spawn_x, win_info[WIN_X_INDEX], 
 		  										   win_info[WIN_LEN_INDEX]) - player_spawn_x;
 		player_distance_to_win_y = findClosestTile(player_spawn_y, win_info[WIN_Y_INDEX], 
 												   win_info[WIN_WIDTH_INDEX]) - player_spawn_y;
 		p_moves_to_win = abs(player_distance_to_win_x) + abs(player_distance_to_win_y);
-	} while(map[player_spawn_x][player_spawn_y] != 0 || 
+	} while(map[player_spawn_y][player_spawn_x] != 0 || 
 			p_moves_to_win < level_selected * 10);
 	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
-	
 	generateWinPath(player, player_distance_to_win_x, player_distance_to_win_y, map);
 	
   	//randomizes goose spawn point and makes sure player can win
-  	do
-  	{
-  		goose_spawn_x = rand() % MAP_X;
-  		goose_spawn_y = rand() % MAP_Y;
-  		goose_distance_to_win_x = findClosestTile(goose_spawn_x, win_info[WIN_X_INDEX], 
-		  										  win_info[WIN_LEN_INDEX]) - goose_spawn_x;
-		goose_distance_to_win_y = findClosestTile(goose_spawn_y, win_info[WIN_Y_INDEX], 
-												  win_info[WIN_WIDTH_INDEX]) - goose_spawn_y;
-		g_moves_to_win = abs(goose_distance_to_win_x) + abs(goose_distance_to_win_y);
-	} while(map[player_spawn_x][player_spawn_y] == 2 ||
-			p_moves_to_win >= g_moves_to_win ||
-			g_moves_to_win - p_moves_to_win < (6-level_selected)*4);
-  	
+	randomGooseSpawn(goose_spawn_x, goose_spawn_y, player_spawn_x, player_spawn_y, p_moves_to_win, level_selected, win_info, map);
+		
 	//make the goose
 	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);
-    
+	cout << goose_spawn_x << " " << goose_spawn_y << endl;
+	
+	if (level_selected == HARD)
+	{
+		do
+		{
+			randomGooseSpawn(goose2_spawn_x, goose2_spawn_y, player_spawn_x, player_spawn_y, p_moves_to_win, level_selected, win_info, map);
+			cout << goose2_spawn_x << " " << goose2_spawn_y << endl;
+		} while (goose2_spawn_x == goose_spawn_x and goose2_spawn_y == goose_spawn_y);
+		
+	}
+	Actor monster2(MONSTER_CHAR, goose2_spawn_x, goose2_spawn_y, 100, GOOSE_COLOUR);
+	if (level_selected == EASY or level_selected == MEDIUM)
+		terminal_clear_area(goose2_spawn_x, goose2_spawn_y, 1, 1);
+		
     printBoard(map);
     
 	// Printing the game instructions in the console window
-    out.writeLine("Escape the Goose! " + monster.get_location_string());
-	out.writeLine("Use the arrow keys to move");
-	out.writeLine("If the goose catches you, you lose!");
-	out.writeLine("Be careful! Sometimes the goose can jump through walls!");
-	//out.writeLine("Powerup 1: Move 2 squares for next 5 turns");
-	//out.writeLine("Powerup 2: Move 10 squares for next turn");
-	//out.writeLine("Powerup 3: Move through 1 wall anytime");
+    out.writeLine("Escape the Goose! Don't let the goose catch you! The goose can fly over walls! ");
+	out.writeLine("Powerup 1: Move 2 squares for next 5 turns");
+	out.writeLine("Powerup 2: Move 10 squares for next turn");
+	out.writeLine("Powerup 3: Move through 1 wall anytime");
     
     //game movement
     while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE 
-                    && !captured(player,monster) && !win)
+                    && !captured(player,monster) && !win && !captured(player, monster2))
 	{
 	    // get player key press
 	    keyEntered = terminal_read();
@@ -228,8 +228,13 @@ int main()
 			}
 			
 			//if the player hasn't been caught and hasn't won
-    	    if (!captured(player,monster) and !win) 
+    	    if (!captured(player,monster) and !win and !captured(player, monster2)) 
+    	    {
     	    	moveGoose(player, monster, map); //moves the goose towards the player
+    	    	if(level_selected == 5)
+    	    		moveGoose(player, monster2, map);
+			}
+    	    	
     	    
     	    
   		}
@@ -240,8 +245,7 @@ int main()
       	//once we're out of the loop, the game is over
         if (win)
         	out.writeLine("You have won");
-        	
-        if (captured(player,monster))
+        else if (captured(player, monster) or captured(player, monster2))
  			out.writeLine("Goose has caught you");
 	
         out.writeLine("Game has ended");

@@ -31,8 +31,8 @@ const int POWER_2_CHAR = int('2');
 const int POWER_3_CHAR = int('3');
 
 //map constants
-const int MAP_X = 80;
-const int MAP_Y = 21;
+const int COL_SIZE = 80;
+const int ROW_SIZE = 21;
 const int LEVEL_SELECT_SIZE = 3;
 
 //Difficulty selection zones coordinates
@@ -101,23 +101,26 @@ const int VALID_KEY_AMOUNT = 6;
 
 bool captured(Actor const & player, Actor const & monster);
 
-void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int & powerup, int & uses);
+void movePlayer(int key, Actor & player, int map[ROW_SIZE][COL_SIZE],bool & win, int & powerup, int & uses);
 
-void printBoard(int map[MAP_X][MAP_Y]);
+void printBoard(int map[ROW_SIZE][COL_SIZE]);
 
-void moveGoose(Actor & monster, Actor & player, int map[MAP_X][MAP_Y]);
+void moveGoose(Actor & monster, Actor & player, int map[ROW_SIZE][COL_SIZE]);
 
-void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected);
+void moveStarter(int key, Actor & starter, int map[ROW_SIZE][COL_SIZE], int & level_selected);
 
-void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int info[WIN_INFO_SIZE]);
+void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[ROW_SIZE][COL_SIZE], int info[WIN_INFO_SIZE]);
 
-void generateRandomWall(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y]);
+void generateRandomWall(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[ROW_SIZE][COL_SIZE]);
 
-void powerupGen(int type, int num, int map[MAP_X][MAP_Y]);
+void powerupGen(int type, int num, int map[ROW_SIZE][COL_SIZE]);
 
 int findClosestTile(int player_location, int win_location, int win_size);
 
-void generateWinPath(Actor & player, int distance_x, int distance_y, int map[MAP_X][MAP_Y]);
+void generateWinPath(Actor & player, int distance_x, int distance_y, int map[ROW_SIZE][COL_SIZE]);
+
+void randomGooseSpawn(int & goose_spawn_x, int & goose_spawn_y, int player_spawn_x, int player_spawn_y, int p_moves_to_win, int level_selected, int win_info[WIN_INFO_SIZE], int map[ROW_SIZE][COL_SIZE]);
+
 
 bool validKeyPress(int key);
 

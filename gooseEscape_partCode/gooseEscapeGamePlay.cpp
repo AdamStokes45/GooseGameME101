@@ -15,34 +15,35 @@ extern Console out;
 
 
 //print the game board with specified values for characters
-void printBoard(int map[MAP_X][MAP_Y])
+//print the game board with specified values for characters
+void printBoard(int map[ROW_SIZE][COL_SIZE])
 {
-	for (int col = 0; col < MAP_X; col++)
+	for (int row = 0; row < ROW_SIZE; row++)
   	{
-  		for (int row = 0; row < MAP_Y; row++)
+  		for (int col = 0; col < COL_SIZE; col++)
     	{
-      		if (map[col][row] == 1)
+      		if (map[row][col] == 1)
       			terminal_put(col, row, WALL_CHAR);
       			
-            else if (map[col][row] == 2)
+            else if (map[row][col] == 2)
               terminal_put(col, row, WIN_CHAR);
               
-            else if (map[col][row] == EASY)
+            else if (map[row][col] == EASY)
               terminal_put(col, row, EASY_CHAR);	
               
-            else if (map[col][row] == MEDIUM)
+            else if (map[row][col] == MEDIUM)
               terminal_put(col, row, MEDIUM_CHAR);
               
-            else if (map[col][row] == HARD)
+            else if (map[row][col] == HARD)
               terminal_put(col, row, HARD_CHAR);
               
-            else if (map[col][row] == POWER_1)
+            else if (map[row][col] == POWER_1)
               terminal_put(col, row, POWER_1_CHAR);
               
-            else if (map[col][row] == POWER_2)
+            else if (map[row][col] == POWER_2)
               terminal_put(col, row, POWER_2_CHAR);
               
-            else if (map[col][row] == POWER_3)
+            else if (map[row][col] == POWER_3)
               terminal_put(col, row, POWER_3_CHAR);
               
     	}
@@ -52,15 +53,15 @@ void printBoard(int map[MAP_X][MAP_Y])
 }
 
 //places winning squares down onto board
-void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[WIN_INFO_SIZE])
+void setWin(int length, int width, int map[ROW_SIZE][COL_SIZE], int win_info[WIN_INFO_SIZE])
 {
-	int spawn_x = rand() % (MAP_X - length);
-    int spawn_y = rand() % (MAP_Y - length);
-	for (int col = 0; col < length; col++)
+	int spawn_x = rand() % (COL_SIZE - length);
+    int spawn_y = rand() % (ROW_SIZE - length);
+	for (int row = 0; row < width; row++)
     {
-       	for (int row = 0; row < width; row++)
+       	for (int col = 0; col < length; col++)
        	{
-       		map[spawn_x + col][spawn_y + row] = WINNER;
+       		map[spawn_y + row][spawn_x + col] = WINNER;
 		}
 	}
 	win_info[WIN_X_INDEX] = spawn_x;
@@ -68,7 +69,7 @@ void setWin(int length, int width, int map[MAP_X][MAP_Y], int win_info[WIN_INFO_
 }
 
 //generates random win location
-void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y], int win_info[WIN_INFO_SIZE])
+void generateRandomWin(int width_lower, int width_range, int length_lower, int length_range, int map[ROW_SIZE][COL_SIZE], int win_info[WIN_INFO_SIZE])
 {
 
 	int width = rand() % width_range + width_lower;
@@ -85,20 +86,20 @@ void generateRandomWin(int width_lower, int width_range, int length_lower, int l
 
 }
 
-void setWall (int length, int width, int map[MAP_X][MAP_Y])
+void setWall (int length, int width, int map[ROW_SIZE][COL_SIZE])
 {
-	int spawn_x = rand() % (MAP_X - length);
-    int spawn_y = rand() % (MAP_Y - length);
-	for (int col = 0; col < length; col++)
+	int spawn_x = rand() % (COL_SIZE - length);
+    int spawn_y = rand() % (ROW_SIZE - length);
+	for (int row = 0; row < length; row++)
     {
-       	for (int row = 0; row < width; row++)
+       	for (int col = 0; col < width; col++)
        	{
-       		map[spawn_x + col][spawn_y + row] = WALL;
+       		map[spawn_y + row][spawn_x + col] = WALL;
 		}
 	}
 }
 
-void generateRandomWall(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[MAP_X][MAP_Y])
+void generateRandomWall(int amount_lower, int amount_range, int width_lower, int width_range, int length_lower, int length_range, int map[ROW_SIZE][COL_SIZE])
 {
 	int amount = rand() % amount_range + amount_lower;
 	for (int num = 0; num < amount; num++)
@@ -123,7 +124,7 @@ bool captured(Actor const & player, Actor const & monster)
 
 
 //function that moves player, while checking for powerup
-void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int & powerup, int & uses)
+void movePlayer(int key, Actor & player, int map[ROW_SIZE][COL_SIZE],bool & win, int & powerup, int & uses)
 {
     int yMove = 0, xMove = 0;
     if (key == TK_UP)
@@ -137,16 +138,16 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 	
 	//moves player regularly
 	if (player.can_move(xMove, yMove) &&
-		map[player.get_x() + xMove][player.get_y() + yMove] != WALL)
+		map[player.get_y() + yMove][player.get_x() + xMove] != WALL)
 		{
 			player.update_location(xMove, yMove);
 		}
 	//case when powerup 3 (move through wall) is active, and wall is infront of player
 	else if(player.can_move(xMove, yMove) &&
-		map[player.get_x() + xMove][player.get_y() + yMove] == WALL && powerup == POWER_3)
+		map[player.get_y() + yMove][player.get_x() + xMove] == WALL && powerup == POWER_3)
 		{
 			int wall_hop = 1;
-			while(map[player.get_x() + xMove*wall_hop][player.get_y() + yMove*wall_hop] == WALL)
+			while(map[player.get_y() + yMove*wall_hop][player.get_x() + xMove*wall_hop] == WALL)
 			{
 				wall_hop += 1;
 			}
@@ -155,38 +156,38 @@ void movePlayer(int key, Actor & player, int map[MAP_X][MAP_Y],bool & win, int &
 			uses = 0;
 		}
 		
-	int location_on_map = map[player.get_x()][player.get_y()];//useless as of now
+	int location_on_map = map[player.get_y()][player.get_x()];//useless as of now
 	
 	//if the player has gone on a powerup, or win
-	if(map[player.get_x()][player.get_y()] > 0)//only runs if hits a powerup or win square
+	if(map[player.get_y()][player.get_x()] > 0)//only runs if hits a powerup or win square
 	{
-		if (map[player.get_x()][player.get_y()] == WINNER)//win square num
+		if (map[player.get_y()][player.get_x()] == WINNER)//win square num
 			win = 1;
 			
-		if (map[player.get_x()][player.get_y()] == POWER_1)//first powerup square num
+		if (map[player.get_y()][player.get_x()] == POWER_1)//first powerup square num
 		{
 			powerup = POWER_1;
 			uses = POW1_USES; //turns the powerup is good for
-			map[player.get_x()][player.get_y()] = 0;//resets the tile so doesnt reprint when map is re-printed
+			map[player.get_y()][player.get_x()] = 0;//resets the tile so doesnt reprint when map is re-printed
 		}
 		
-		if (map[player.get_x()][player.get_y()] == POWER_2)//second powerup square num
+		if (map[player.get_y()][player.get_x()] == POWER_2)//second powerup square num
 		{
 			powerup = POWER_2;
-			map[player.get_x()][player.get_y()] = 0;
+			map[player.get_y()][player.get_x()] = 0;
 		}    
 		 
-		if (map[player.get_x()][player.get_y()] == POWER_3)//second powerup square num
+		if (map[player.get_y()][player.get_x()] == POWER_3)//second powerup square num
 		{
 			powerup = POWER_3;
-			map[player.get_x()][player.get_y()] = 0;
+			map[player.get_y()][player.get_x()] = 0;
 		}  	
 	}		
 }
 
 
 //function that moves the goose
-void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
+void moveGoose(Actor & player, Actor & goose,  int map[ROW_SIZE][COL_SIZE])
 {
 	int yMove = 0, xMove = 0;
     if (abs(player.get_x() - goose.get_x()) > abs(player.get_y() - goose.get_y()))
@@ -205,7 +206,7 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
     }
     
     //used to re-print the gameboard if the goose flys over a wall
-    if (map[goose.get_x()][goose.get_y()] != 0)
+    if (map[goose.get_y()][goose.get_x()] != 0)
     {
     	goose.update_location(xMove, yMove);
 		printBoard(map);
@@ -219,7 +220,7 @@ void moveGoose(Actor & player, Actor & goose,  int map[MAP_X][MAP_Y])
 }
 
 //starter is the object used in the level selection stage, same as movePlayer
-void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_selected)
+void moveStarter(int key, Actor & starter, int map[ROW_SIZE][COL_SIZE], int & level_selected)
 {
 	int yMove = 0, xMove = 0;
     if (key == TK_UP)
@@ -234,12 +235,12 @@ void moveStarter(int key, Actor & starter, int map[MAP_X][MAP_Y], int & level_se
     if (starter.can_move(xMove, yMove)) 
 			starter.update_location(xMove, yMove);
     
-    if (map[starter.get_x()][starter.get_y()] != 0)
-		level_selected = map[starter.get_x()][starter.get_y()];
+    if (map[starter.get_y()][starter.get_x()] != 0)
+		level_selected = map[starter.get_y()][starter.get_x()];
 }
 
 //places specified powerups onto the map
-void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
+void powerupGen(int type, int num, int map[ROW_SIZE][COL_SIZE])
 {
 	int x_power = 0;
 	int y_power = 0;
@@ -250,11 +251,11 @@ void powerupGen(int type, int num, int map[MAP_X][MAP_Y])
 		
 		while(!placed)
 		{
-			x_power = rand() % MAP_X;
-			y_power = rand() % MAP_Y;
-			if(map[x_power][y_power] == EMPTY)
+			y_power = rand() % ROW_SIZE;
+			x_power = rand() % COL_SIZE;
+			if(map[y_power][x_power] == EMPTY)
 			{
-				map[x_power][y_power] = type;
+				map[y_power][x_power] = type;
 				placed = true;
 			}
 		}	
@@ -290,46 +291,56 @@ int findClosestTile(int player_location, int win_location, int win_size)
 	return closestTile;
 }
 
-void randomPath(int & position, int position2, int & distance, int map[MAP_X][MAP_Y], bool x)
+void randomPath(int & position, int position2, int & distance, int map[ROW_SIZE][COL_SIZE], bool x)
 {
 	int path_length = 0;
-	if (distance > 0)
-	{	
-		path_length = rand() % distance + 1;	
-		for(int pos = 0; pos < path_length; pos++)
-		{
-			if (x)
-				map[position + pos][position2] = EMPTY;
-			else
-				map[position2][position + pos] = EMPTY;
-		}
-		position += path_length;
-		distance -= path_length;
-	}
+	int positive = 1;
+	if(distance > 0)
+		path_length = rand() % distance + 1;
 	else if (distance < 0)
-	{	
-		path_length = rand() % abs(distance) + 1;	
-		for(int pos = 0; pos < path_length; pos++)
-		{
-			if (x)
-				map[position - pos][position2] = EMPTY;
-			else
-				map[position2][position - pos] = EMPTY;
-		}
-		position -= path_length;
-		distance += path_length;
+	{
+		path_length = rand() % abs(distance) + 1;
+		positive = -1;
 	}
+	
+	for(int pos = 0; pos < path_length; pos++)
+	{
+		if (x)
+			map[position2][position + pos * positive] = EMPTY;
+		else
+			map[position + pos * positive][position2] = EMPTY;
+	}
+	position += path_length*positive;
+	distance -= path_length*positive;
+
 }
 	
-void generateWinPath(Actor & player, int distance_x, int distance_y, int map[MAP_X][MAP_Y])
+void generateWinPath(Actor & player, int distance_x, int distance_y, int map[ROW_SIZE][COL_SIZE])
 {
 	int player_x = player.get_x(), player_y = player.get_y();
 	
-	while(map[player_x-1][player_y-1] != WINNER and map[player_x+1][player_y-1] != WINNER and map[player_x-1][player_y+1] != WINNER and map[player_x+1][player_y+1] != WINNER)
+	while(map[player_y-1][player_x-1] != WINNER and map[player_y-1][player_x+1] != WINNER and map[player_y+1][player_x-1] != WINNER and map[player_y+1][player_x+1] != WINNER)
 	{
 		randomPath(player_x, player_y, distance_x, map, true);
 		randomPath(player_y, player_x, distance_y, map, false);
 		if (distance_x == 0 and distance_y == 0)
 			return;
 	}
+}
+
+void randomGooseSpawn(int & goose_spawn_x, int & goose_spawn_y, int player_spawn_x, int player_spawn_y, int p_moves_to_win, int level_selected, int win_info[WIN_INFO_SIZE], int map[ROW_SIZE][COL_SIZE])
+{
+	int g_moves_to_win = 0;
+	do
+  	{
+  		goose_spawn_x = rand() % COL_SIZE;
+  		goose_spawn_y = rand() % ROW_SIZE;
+		g_moves_to_win = abs(findClosestTile(goose_spawn_x, win_info[WIN_X_INDEX], 
+		  					win_info[WIN_LEN_INDEX]) - goose_spawn_x) + 
+							abs(findClosestTile(goose_spawn_y, win_info[WIN_Y_INDEX], 
+							win_info[WIN_WIDTH_INDEX]) - goose_spawn_y);
+	} while(map[player_spawn_y][player_spawn_x] == WINNER ||
+			p_moves_to_win >= g_moves_to_win ||
+			g_moves_to_win - p_moves_to_win < (6-level_selected)*4 ||
+			map[goose_spawn_y][goose_spawn_x] != EMPTY);
 }
