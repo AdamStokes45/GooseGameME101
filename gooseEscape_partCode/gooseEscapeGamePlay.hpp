@@ -82,7 +82,7 @@ const int H_WIN_WIDTH_LOWER = 1; //Win zone constants
 const int H_WIN_WIDTH_RANGE = 1;
 const int H_WIN_LENGTH_LOWER = 1;
 const int H_WIN_LENGTH_RANGE = 1;
-const int H_POW1_NUM = 2; //Powerup constants
+const int H_POW3_NUM = 2; //Powerup constants
 
 //win info constants
 const int WIN_INFO_SIZE = 4;
