@@ -138,7 +138,7 @@ int main()
   		generateRandomWin(H_WIN_WIDTH_LOWER, H_WIN_WIDTH_RANGE, 
 		  				  H_WIN_LENGTH_LOWER, H_WIN_LENGTH_RANGE, map, win_info);
 
-  		powerupGen(POWER_1, H_POW1_NUM, map);
+  		powerupGen(POWER_3, H_POW3_NUM, map);
   	}
   	//randomizes player spawn point and makes sure to spawn in a clear area
   	do
@@ -160,12 +160,14 @@ int main()
 		
 	//make the goose
 	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);
+	cout << goose_spawn_x << " " << goose_spawn_y << endl;
 	
 	if (level_selected == HARD)
 	{
 		do
 		{
 			randomGooseSpawn(goose2_spawn_x, goose2_spawn_y, player_spawn_x, player_spawn_y, p_moves_to_win, level_selected, win_info, map);
+			cout << goose2_spawn_x << " " << goose2_spawn_y << endl;
 		} while (goose2_spawn_x == goose_spawn_x and goose2_spawn_y == goose_spawn_y);
 		
 	}
@@ -232,6 +234,9 @@ int main()
     	    	if(level_selected == 5)
     	    		moveGoose(player, monster2, map);
 			}
+    	    	
+    	    
+    	    
   		}
 	}
 	
