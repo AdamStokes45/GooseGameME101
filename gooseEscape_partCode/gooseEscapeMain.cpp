@@ -233,6 +233,7 @@ int main()
     	    	moveGoose(player, monster, map); //moves the goose towards the player
     	    	if(level_selected == 5)
     	    		moveGoose(player, monster2, map);
+    	    		monster.update_location(0,0);
 			}
     	    	
     	    

@@ -187,7 +187,7 @@ void movePlayer(int key, Actor & player, int map[ROW_SIZE][COL_SIZE],bool & win,
 
 
 //function that moves the goose
-void moveGoose(Actor & player, Actor & goose,  int map[ROW_SIZE][COL_SIZE])
+void moveGoose(Actor & player, Actor & goose, int map[ROW_SIZE][COL_SIZE])
 {
 	int yMove = 0, xMove = 0;
     if (abs(player.get_x() - goose.get_x()) > abs(player.get_y() - goose.get_y()))
