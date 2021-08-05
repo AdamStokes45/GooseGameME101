@@ -161,7 +161,7 @@ int main()
 	//make the goose
 	Actor monster(MONSTER_CHAR, goose_spawn_x, goose_spawn_y, 100, GOOSE_COLOUR);
 
-	
+	//If the difficulty is hard, spawn another goose
 	if (level_selected == HARD)
 	{
 		do

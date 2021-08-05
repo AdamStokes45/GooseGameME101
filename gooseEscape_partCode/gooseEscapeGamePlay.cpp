@@ -275,7 +275,7 @@ bool validKeyPress(int key)
 	return false;
 }
 
-
+//finds the closest win tile on one axis
 int findClosestTile(int player_location, int win_location, int win_size)
 {
 	int closestTile = 0;
@@ -339,10 +339,17 @@ void generateWinPath(Actor & player, int distance_x, int distance_y, int map[ROW
 		randomPath(player_y, player_x, distance_y, map, false);
 	}
 }
-
-void randomGooseSpawn(int & goose_spawn_x, int & goose_spawn_y, int player_spawn_x, int player_spawn_y, int p_moves_to_win, int level_selected, int win_info[WIN_INFO_SIZE], int map[ROW_SIZE][COL_SIZE])
+//generates random spawn location for a goose
+void randomGooseSpawn(int & goose_spawn_x, int & goose_spawn_y, int player_spawn_x, 
+					  int player_spawn_y, int p_moves_to_win, int level_selected, 
+					  int win_info[WIN_INFO_SIZE], int map[ROW_SIZE][COL_SIZE])
 {
 	int g_moves_to_win = 0;
+	/*do while loop continues looping if any of the three following conditions are true:
+	-goose spawns closer to win zone than the player
+	-goose doesn't spawn on an empty area
+	-the difference between the moves to win is less than a certain amount 
+	(this amount is determined by the level selected, Easy -> 6, Medium -> 4, Hard -> 2)*/
 	do
   	{
   		goose_spawn_x = rand() % COL_SIZE;
@@ -351,8 +358,9 @@ void randomGooseSpawn(int & goose_spawn_x, int & goose_spawn_y, int player_spawn
 		  					win_info[WIN_LEN_INDEX]) - goose_spawn_x) + 
 							abs(findClosestTile(goose_spawn_y, win_info[WIN_Y_INDEX], 
 							win_info[WIN_WIDTH_INDEX]) - goose_spawn_y);
-	} while(map[player_spawn_y][player_spawn_x] == WINNER ||
-			p_moves_to_win >= g_moves_to_win ||
-			g_moves_to_win - p_moves_to_win < (6-level_selected)*4 ||
+	} while(p_moves_to_win >= g_moves_to_win ||
+			g_moves_to_win - p_moves_to_win < (6-level_selected)*2 ||
 			map[goose_spawn_y][goose_spawn_x] != EMPTY);
+	/*(6-level_selected)*2 is the math needed to calculate the minimum 
+	difference between the moves to win of the player and goose */
 }
