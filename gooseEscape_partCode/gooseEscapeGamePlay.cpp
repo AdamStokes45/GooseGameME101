@@ -140,7 +140,7 @@ void movePlayer(int key, Actor & player, int map[ROW_SIZE][COL_SIZE],bool & win,
 	if (player.can_move(xMove, yMove) &&
 		map[player.get_y() + yMove][player.get_x() + xMove] != WALL)
 		{
-			player.update_location(xMove, yMove);
+			player.update_location(xMove, yMove,true);
 		}
 	//case when powerup 3 (move through wall) is active, and wall is infront of player
 	else if(player.can_move(xMove, yMove) &&
@@ -151,7 +151,7 @@ void movePlayer(int key, Actor & player, int map[ROW_SIZE][COL_SIZE],bool & win,
 			{
 				wall_hop += 1;
 			}
-			player.update_location(wall_hop*xMove, wall_hop*yMove);
+			player.update_location(wall_hop*xMove, wall_hop*yMove,true);
 			powerup = 0;
 			uses = 0;
 		}
@@ -208,13 +208,13 @@ void moveGoose(Actor & player, Actor & goose, int map[ROW_SIZE][COL_SIZE])
     //used to re-print the gameboard if the goose flys over a wall
     if (map[goose.get_y()][goose.get_x()] != 0)
     {
-    	goose.update_location(xMove, yMove);
+    	goose.update_location(xMove, yMove,true);
 		printBoard(map);
-   		goose.update_location(0,0);
+   		goose.update_location(0,0,true);
 	}
 	else
 	{
-		goose.update_location(xMove, yMove);//if hes not on a wall, he just moves
+		goose.update_location(xMove, yMove,true);//if hes not on a wall, he just moves
 	}
   
 }
@@ -233,7 +233,7 @@ void moveStarter(int key, Actor & starter, int map[ROW_SIZE][COL_SIZE], int & le
         xMove = 1;
     
     if (starter.can_move(xMove, yMove)) 
-			starter.update_location(xMove, yMove);
+			starter.update_location(xMove, yMove,true);
     
     if (map[starter.get_y()][starter.get_x()] != 0)
 		level_selected = map[starter.get_y()][starter.get_x()];

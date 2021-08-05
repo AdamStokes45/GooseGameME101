@@ -152,7 +152,7 @@ int main()
 		p_moves_to_win = abs(player_distance_to_win_x) + abs(player_distance_to_win_y);
 	} while(map[player_spawn_y][player_spawn_x] != 0 || 
 			p_moves_to_win < level_selected * 10);
-	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y());
+	player.update_location(player_spawn_x - player.get_x(), player_spawn_y - player.get_y(), true);
 	generateWinPath(player, player_distance_to_win_x, player_distance_to_win_y, map);
 	
   	//randomizes goose spawn point and makes sure player can win
@@ -186,7 +186,7 @@ int main()
     while(keyEntered != TK_ESCAPE && keyEntered != TK_CLOSE 
                     && !captured(player,monster) && !win && !captured(player, monster2))
 	{
-	    // get player key press
+	    //get player key press
 	    keyEntered = terminal_read();
 
 		/* valid key press checks that the player is hitting one of the arrow keys 
@@ -210,7 +210,7 @@ int main()
 				}
             	uses --;
             	
-            	if (uses == 0)
+            	if (uses == 0)//resets powerup
 					powerup = 0;
 			}
 			
@@ -223,16 +223,16 @@ int main()
 					if(win) //If you reach the win location you stop
 						moves = 10;
 				}
-            	powerup = 0;
+            	powerup = 0;//resets powerup
 			}
 			
 			//if the player hasn't been caught and hasn't won
     	    if (!captured(player,monster) and !win and !captured(player, monster2)) 
     	    {
     	    	moveGoose(player, monster, map); //moves the goose towards the player
-    	    	if(level_selected == 5)
+    	    	if(level_selected == 5)//moving second goose
     	    		moveGoose(player, monster2, map);
-    	    		monster.update_location(0,0);
+    	    		monster.update_location(0,0,true);
 			}
     	    	
     	    
