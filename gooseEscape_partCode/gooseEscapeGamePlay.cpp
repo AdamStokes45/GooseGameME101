@@ -291,40 +291,52 @@ int findClosestTile(int player_location, int win_location, int win_size)
 	return closestTile;
 }
 
+/*this function randomizes the win path length in one dimension
+The boolean x variable determines which orienation the path is.
+If x is true that means it's a path on the x axis. If it is false it is a 
+path on the y axis.
+For a path on the x axis, the position parameter is it's x coordinate (which will change),
+and position2 is it's y coordinate (which will stay constant). For a path on 
+the y axis it's fliped (position -> y, position2 -> x)
+The distance parameter is the distance to the win zone on that axis*/
 void randomPath(int & position, int position2, int & distance, int map[ROW_SIZE][COL_SIZE], bool x)
 {
-	int path_length = 0;
-	int positive = 1;
-	if(distance > 0)
-		path_length = rand() % distance + 1;
-	else if (distance < 0)
-	{
-		path_length = rand() % abs(distance) + 1;
+	if (distance == 0)
+		return;
+	/*this variable determines whether or not the player will move in a positive 
+	direction. If it is 1 they move in the positive direction, if it is -1
+	they move in the negative direction */
+	int positive = 1; 
+	//This picks a random path length from 1 to the distance to the win zone
+	int path_length = rand() % abs(distance) + 1;
+	if (distance < 0) 
 		positive = -1;
-	}
-	
-	for(int pos = 0; pos < path_length; pos++)
+	//for the randomized path length, make those coordinates on the map empty (removes walls in the way)
+	for(int pos = 1; pos <= path_length; pos++)
 	{
-		if (x)
+		//if the path is x oriented, make the path on the x axis
+		if (x) 
 			map[position2][position + pos * positive] = EMPTY;
-		else
+		else //else make it on the y axis
 			map[position + pos * positive][position2] = EMPTY;
 	}
+	//updates current position and distance to win zone 
 	position += path_length*positive;
 	distance -= path_length*positive;
 
 }
-	
+
+//this function generates an empty path to the win zone to ensure each level is winnable
 void generateWinPath(Actor & player, int distance_x, int distance_y, int map[ROW_SIZE][COL_SIZE])
 {
 	int player_x = player.get_x(), player_y = player.get_y();
-	
-	while(map[player_y-1][player_x-1] != WINNER and map[player_y-1][player_x+1] != WINNER and map[player_y+1][player_x-1] != WINNER and map[player_y+1][player_x+1] != WINNER)
+	//this while loop continues untill it is beside the win zone
+	while(distance_x > 1 or distance_y > 1)
 	{
+		//triggers random path function for the x axis path
 		randomPath(player_x, player_y, distance_x, map, true);
+		//triggers random path function for the y axis path
 		randomPath(player_y, player_x, distance_y, map, false);
-		if (distance_x == 0 and distance_y == 0)
-			return;
 	}
 }
 
